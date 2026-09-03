@@ -9,6 +9,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="MovieDetailsViewController" customModule="RateMovie" customModuleProvider="target">
             <connections>
+                <outlet property="contentStackView" destination="stk-main-body" id="out-content-stack"/>
                 <outlet property="genresView" destination="vw-genres" id="out-genres"/>
                 <outlet property="headerView" destination="vw-header" id="out-header"/>
                 <outlet property="infoView" destination="vw-info" id="out-info"/>

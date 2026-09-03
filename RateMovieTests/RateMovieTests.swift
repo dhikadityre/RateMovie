@@ -6,6 +6,7 @@
 //
 
 import XCTest
+import SwiftUI
 @testable import RateMovie
 
 final class RateMovieTests: XCTestCase {
@@ -147,6 +148,18 @@ final class RateMovieTests: XCTestCase {
         viewModel.reset()
         XCTAssertFalse(viewModel.hasRating)
         XCTAssertFalse(viewModel.isSubmitted)
+    }
+
+    func testMovieDetailsViewControllerEmbedsRatingWidget() {
+        let vc = MovieDetailsViewController()
+        vc.loadViewIfNeeded()
+        
+        XCTAssertNotNil(vc.ratingHostingController, "Rating hosting controller should be initialized")
+        XCTAssertNotNil(vc.ratingViewModel, "Rating view model should be initialized")
+        XCTAssertTrue(vc.children.contains(where: { $0 is UIHostingController<InteractiveRatingWidgetView> }), "Hosting controller should be added as child view controller")
+        if let stackView = vc.contentStackView, let hostingView = vc.ratingHostingController?.view {
+            XCTAssertTrue(stackView.arrangedSubviews.contains(hostingView), "Hosting controller view should be an arranged subview in contentStackView")
+        }
     }
 }
 

@@ -6,17 +6,23 @@
 //
 
 import UIKit
+import SwiftUI
 
 class MovieDetailsViewController: UIViewController {
     
     // MARK: - IBOutlets (Modular Custom Views)
     @IBOutlet weak var scrollView: UIScrollView!
+    @IBOutlet weak var contentStackView: UIStackView!
     @IBOutlet weak var navBarView: MovieDetailNavBarView!
     @IBOutlet weak var headerView: MovieDetailHeaderView!
     @IBOutlet weak var infoView: MovieDetailInfoView!
     @IBOutlet weak var genresView: MovieDetailGenresView!
     @IBOutlet weak var storylineView: MovieDetailStorylineView!
     @IBOutlet weak var similarView: MovieDetailSimilarView!
+    
+    // MARK: - SwiftUI Embedded Component
+    private(set) var ratingHostingController: UIHostingController<InteractiveRatingWidgetView>?
+    private(set) var ratingViewModel = InteractiveRatingWidgetViewModel()
     
     // MARK: - ViewModel
     var viewModel: MovieDetailsViewModel?
@@ -56,7 +62,34 @@ extension MovieDetailsViewController {
         view.backgroundColor = RMColor.backgroundPrimary
         scrollView.backgroundColor = RMColor.backgroundPrimary
         scrollView.delegate = self
+        setupRatingWidget()
         updateComponents()
+    }
+    
+    private func setupRatingWidget() {
+        guard let contentStackView = contentStackView else { return }
+        
+        let ratingVM = InteractiveRatingWidgetViewModel(
+            movieTitle: viewModel?.title,
+            onRatingSubmitted: { [weak self] _ in
+                self?.snakeBarGreen(message: "Thank you for rating!")
+            }
+        )
+        self.ratingViewModel = ratingVM
+        
+        let hostingController = UIHostingController(rootView: InteractiveRatingWidgetView(viewModel: ratingVM))
+        hostingController.view.backgroundColor = .clear
+        
+        addChild(hostingController)
+        
+        if let similarIndex = contentStackView.arrangedSubviews.firstIndex(of: similarView) {
+            contentStackView.insertArrangedSubview(hostingController.view, at: similarIndex)
+        } else {
+            contentStackView.addArrangedSubview(hostingController.view)
+        }
+        
+        hostingController.didMove(toParent: self)
+        self.ratingHostingController = hostingController
     }
     
     private func setupCallbacks() {
