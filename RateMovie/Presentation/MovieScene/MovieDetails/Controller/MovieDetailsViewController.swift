@@ -6,101 +6,181 @@
 //
 
 import UIKit
-import Kingfisher
 
-class MovieDetailsViewController: UIViewController, ClearNavBar {
-    @IBOutlet weak var headerImageView: UIImageView!
-    @IBOutlet weak var contentImageView: UIImageView!
-    @IBOutlet weak var titleMovieLabel: UILabel!
-    @IBOutlet weak var rateMovieLabel: UILabel!
+class MovieDetailsViewController: UIViewController {
     
-    @IBOutlet weak var overviewDescriptionLabel: UILabel!
-    @IBOutlet weak var recommendationCollectionView: UICollectionView!
-    @IBOutlet weak var recommendationCollectionViewHeight: NSLayoutConstraint!
+    // MARK: - IBOutlets (Modular Custom Views)
+    @IBOutlet weak var scrollView: UIScrollView!
+    @IBOutlet weak var navBarView: MovieDetailNavBarView!
+    @IBOutlet weak var headerView: MovieDetailHeaderView!
+    @IBOutlet weak var infoView: MovieDetailInfoView!
+    @IBOutlet weak var genresView: MovieDetailGenresView!
+    @IBOutlet weak var storylineView: MovieDetailStorylineView!
+    @IBOutlet weak var similarView: MovieDetailSimilarView!
     
+    // MARK: - ViewModel
     var viewModel: MovieDetailsViewModel?
 }
 
+// MARK: - Lifecycle
 extension MovieDetailsViewController {
     override var preferredStatusBarStyle: UIStatusBarStyle {
+        if #available(iOS 13.0, *) {
+            return traitCollection.userInterfaceStyle == .dark ? .lightContent : .darkContent
+        }
         return .lightContent
     }
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        setNavigationBackground()
-    }
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        viewModel?.didLoad()
-        configureCollectionView()
-        setupView()
-        bind()
+        navigationController?.setNavigationBarHidden(true, animated: animated)
     }
     
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setupUI()
+        setupCallbacks()
+        bind()
+        viewModel?.didLoad()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        resetNavigationBackground()
+        navigationController?.setNavigationBarHidden(false, animated: animated)
     }
 }
 
+// MARK: - UI & Callbacks Setup
 extension MovieDetailsViewController {
-    private func configureCollectionView() {
-        recommendationCollectionView.delegate = self
-        recommendationCollectionView.dataSource = self
-        recommendationCollectionView.register(
-            MovieItemCollectionViewCell.nib(),
-            forCellWithReuseIdentifier: MovieItemCollectionViewCell.identifier
-        )
+    private func setupUI() {
+        view.backgroundColor = RMColor.backgroundPrimary
+        scrollView.backgroundColor = RMColor.backgroundPrimary
+        scrollView.delegate = self
+        updateComponents()
     }
     
-    private func setupView() {
-        headerImageView.contentMode = .scaleAspectFit
-        if let url = viewModel?.getMovieResult().backdropPath,
-           let imageUrl = URL(string: Endpoint.Images.baseImage + url)
-        {
-            headerImageView.kf.setImage(
-                with: imageUrl,
-                placeholder: UIImage.init(named: ""),
-                options: [.transition(.fade(0))],
-                progressBlock: nil,
-                completionHandler: nil
-            )
+    private func setupCallbacks() {
+        navBarView.onBackTapped = { [weak self] in
+            self?.navigationController?.popViewController(animated: true)
         }
         
-        if let url = viewModel?.getMovieResult().posterPath,
-            let imageUrl = URL(string: Endpoint.Images.baseImage + url) {
-            contentImageView.kf.setImage(
-                with: imageUrl,
-                placeholder: UIImage.init(named: ""),
-                options: [.transition(.fade(0))],
-                progressBlock: nil,
-                completionHandler: nil
-            )
+        navBarView.onShareTapped = { [weak self] in
+            self?.handleShare()
         }
         
-        titleMovieLabel.text = viewModel?.getMovieResult().originalTitle
-        if let rateMovie = viewModel?.getMovieResult().voteAverage {
-            rateMovieLabel.text = "⭐" + String(rateMovie)
+        navBarView.onFavoriteTapped = { [weak self] in
+            self?.viewModel?.toggleFavorite()
         }
-        overviewDescriptionLabel.text = viewModel?.getMovieResult().overview
+        
+        storylineView.onToggleExpand = { [weak self] in
+            UIView.animate(withDuration: 0.25) {
+                self?.view.layoutIfNeeded()
+            }
+        }
+        
+        similarView.onSelectMovie = { [weak self] movie in
+            self?.navigateToDetail(for: movie)
+        }
     }
     
     private func bind() {
-        viewModel?.movieSimilar.observe(on: self) { [weak self] movieSimilar in
-            self?.recommendationCollectionView.reloadData()
-            if movieSimilar.count != 0 {
-                self?.recommendationCollectionView.reloadData()
-                self?.recommendationCollectionView.invalidateIntrinsicContentSize()
-                self?.recommendationCollectionView.setNeedsLayout()
-                self?.recommendationCollectionView.layoutIfNeeded()
-            }
+        // Observe Full Movie Details
+        viewModel?.movieDetail.observe(on: self) { [weak self] _ in
+            self?.updateComponents()
         }
-        viewModel?.isFavorite.observe(on: self, observerBlock: { isFav in
-            print("[*] Favourite: \(isFav)")
-        })
+        
+        // Observe Similar Movies
+        viewModel?.movieSimilar.observe(on: self) { [weak self] similar in
+            self?.similarView.setView(with: MovieDetailSimilarViewModel(movies: similar))
+        }
+        
+        // Observe Favorite Status
+        viewModel?.isFavorite.observe(on: self) { [weak self] isFav in
+            self?.navBarView.updateFavorite(isFavorite: isFav, animated: true)
+        }
+    }
+    
+    private func updateComponents() {
+        guard let vm = viewModel else { return }
+        
+        headerView.setView(with: MovieDetailHeaderViewModel(backdropURL: vm.backdropURL))
+        navBarView.setView(with: MovieDetailNavBarViewModel(title: vm.title, isFavorite: vm.isFavorite.value))
+        
+        infoView.setView(
+            with: MovieDetailInfoViewModel(
+                posterURL: vm.posterURL,
+                title: vm.title,
+                tagline: vm.taglineFormatted,
+                rating: vm.ratingFormatted,
+                voteCount: vm.voteCountFormatted,
+                releaseYear: vm.releaseYearFormatted,
+                runtime: vm.runtimeFormatted,
+                language: vm.languageFormatted
+            )
+        )
+        
+        genresView.setView(with: MovieDetailGenresViewModel(genres: vm.genresFormatted))
+        storylineView.setView(with: MovieDetailStorylineViewModel(overview: vm.overview))
+    }
+}
+
+// MARK: - Navigation & Action Handlers
+extension MovieDetailsViewController {
+    private func handleShare() {
+        guard let vm = viewModel else { return }
+        let shareText = "Check out \(vm.title) (Rating: ★ \(vm.ratingFormatted)) on RateMovie!\n\n\(vm.overview)"
+        let activityVC = UIActivityViewController(activityItems: [shareText], applicationActivities: nil)
+        activityVC.popoverPresentationController?.sourceView = navBarView.shareButton
+        present(activityVC, animated: true)
+    }
+    
+    private func navigateToDetail(for selectedMovie: MovieIdSimilarResponse.Result) {
+        guard let movieId = selectedMovie.id else { return }
+        
+        let movieResult = FavoriteNowPlaying(
+            isFavorite: false,
+            posterPath: selectedMovie.posterPath,
+            adult: selectedMovie.adult,
+            overview: selectedMovie.overview,
+            releaseDate: selectedMovie.releaseDate,
+            genreIDS: selectedMovie.genreIDS,
+            id: selectedMovie.id,
+            originalTitle: selectedMovie.originalTitle,
+            originalLanguage: selectedMovie.originalLanguage,
+            title: selectedMovie.title,
+            backdropPath: selectedMovie.backdropPath,
+            popularity: selectedMovie.popularity,
+            voteCount: selectedMovie.voteCount,
+            video: selectedMovie.video,
+            voteAverage: selectedMovie.voteAverage
+        )
+        
+        let detailVC = MovieDetailsViewController()
+        detailVC.hidesBottomBarWhenPushed = true
+        let vm = DefaultMovieDetailsViewModel(
+            movieId: movieId,
+            movieResult: movieResult,
+            useCase: DefaultFetchMovieSimilarUseCase(
+                repository: DefaultBaseMovieRepository(
+                    remoteData: DefaultBaseRemoteMovies(),
+                    localData: DefaultBaseLocalMovies()
+                )
+            )
+        )
+        detailVC.viewModel = vm
+        navigationController?.pushViewController(detailVC, animated: true)
+    }
+}
+
+// MARK: - UIScrollViewDelegate (Parallax & Navbar Fade)
+extension MovieDetailsViewController: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let offsetY = scrollView.contentOffset.y
+        
+        // Navbar Alpha Fade
+        navBarView.setAlphaProgress(offsetY / 160.0)
+        
+        // Stretchy Parallax Header on Pull Down
+        headerView.applyParallax(offsetY: offsetY)
     }
 }

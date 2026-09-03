@@ -8,13 +8,13 @@
 import UIKit
 
 public class MovieItemCollectionViewCell: UICollectionViewCell {
-    @IBOutlet weak var containerView: UIView!
-    @IBOutlet weak var favoriteView: UIView!
-    @IBOutlet weak var moviePreviewImageView: UIImageView!
-    @IBOutlet weak var movieTitleLabel: UILabel!
-    @IBOutlet weak var movieRateLabel: UILabel!
-    @IBOutlet weak var movieLanguageLabel: UILabel!
-    @IBOutlet weak var movieFavoriteImageView: UIImageView!
+    @IBOutlet public weak var containerView: UIView!
+    @IBOutlet public weak var favoriteView: UIView!
+    @IBOutlet public weak var moviePreviewImageView: UIImageView!
+    @IBOutlet public weak var movieTitleLabel: UILabel!
+    @IBOutlet public weak var movieRateLabel: UILabel!
+    @IBOutlet public weak var movieLanguageLabel: UILabel!
+    @IBOutlet public weak var movieFavoriteImageView: UIImageView!
     
     public var onFavouriteTapped: (() -> Void)?
     
@@ -26,11 +26,73 @@ public class MovieItemCollectionViewCell: UICollectionViewCell {
         UINib(nibName: identifier, bundle: Bundle(for: self.self))
     }
     
+    public override var isHighlighted: Bool {
+        didSet {
+            UIView.animate(
+                withDuration: 0.2,
+                delay: 0,
+                usingSpringWithDamping: 0.8,
+                initialSpringVelocity: 0.5,
+                options: [.curveEaseInOut, .allowUserInteraction]
+            ) {
+                self.transform = self.isHighlighted ? CGAffineTransform(scaleX: 0.95, y: 0.95) : .identity
+            }
+        }
+    }
+    
     public override func awakeFromNib() {
         super.awakeFromNib()
-        moviePreviewImageView.contentMode = .scaleAspectFit
+        setupUI()
         setupGesture()
-        setupShadow()
+    }
+    
+    public override func prepareForReuse() {
+        super.prepareForReuse()
+        moviePreviewImageView.image = nil
+        movieTitleLabel.text = nil
+        movieRateLabel.text = nil
+        movieLanguageLabel.text = nil
+        transform = .identity
+    }
+    
+    private func setupUI() {
+        containerView.backgroundColor = UIColor(red: 28/255, green: 28/255, blue: 32/255, alpha: 1.0)
+        containerView.layer.cornerRadius = 14
+        containerView.layer.masksToBounds = false
+        containerView.layer.shadowColor = UIColor.black.cgColor
+        containerView.layer.shadowOpacity = 0.22
+        containerView.layer.shadowOffset = CGSize(width: 0, height: 4)
+        containerView.layer.shadowRadius = 8
+        
+        moviePreviewImageView.contentMode = .scaleAspectFill
+        moviePreviewImageView.clipsToBounds = true
+        moviePreviewImageView.layer.cornerRadius = 14
+        moviePreviewImageView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+        moviePreviewImageView.backgroundColor = UIColor(red: 40/255, green: 40/255, blue: 45/255, alpha: 1.0)
+        
+        favoriteView.backgroundColor = UIColor.black.withAlphaComponent(0.45)
+        favoriteView.layer.cornerRadius = 16
+        favoriteView.clipsToBounds = true
+        favoriteView.layer.borderWidth = 0.5
+        favoriteView.layer.borderColor = UIColor.white.withAlphaComponent(0.25).cgColor
+        
+        movieFavoriteImageView.tintColor = .systemPink
+        
+        if let langContainer = movieLanguageLabel.superview {
+            langContainer.backgroundColor = UIColor.black.withAlphaComponent(0.65)
+            langContainer.layer.cornerRadius = 6
+            langContainer.clipsToBounds = true
+            langContainer.layer.borderWidth = 0.5
+            langContainer.layer.borderColor = UIColor.white.withAlphaComponent(0.2).cgColor
+        }
+        movieLanguageLabel.textColor = .white
+        movieLanguageLabel.font = .systemFont(ofSize: 10, weight: .bold)
+        
+        movieTitleLabel.textColor = .white
+        movieTitleLabel.font = .systemFont(ofSize: 13, weight: .semibold)
+        
+        movieRateLabel.textColor = UIColor(red: 245/255, green: 197/255, blue: 24/255, alpha: 1.0)
+        movieRateLabel.font = .systemFont(ofSize: 11, weight: .medium)
     }
     
     public func setView(
@@ -39,17 +101,23 @@ public class MovieItemCollectionViewCell: UICollectionViewCell {
         movieLanguage: String
     ) {
         movieTitleLabel.text = movieTitle
-        movieRateLabel.text = "⭐ \(String(describing: movieRate))/10"
-        movieLanguageLabel.text = movieLanguage
+        movieRateLabel.text = movieRate
+        movieLanguageLabel.text = movieLanguage.uppercased()
     }
     
-    public func setMovieFavoriteImageView(status: Bool) {
-        if #available(iOS 13.0, *) {
-            moviePreviewImageView.image = status
-            ? UIImage(systemName: "bookmark.fill")
-            : UIImage(systemName: "bookmark")
+    public func setMovieFavoriteImageView(status: Bool, animated: Bool = false) {
+        let imageName = status ? "bookmark.fill" : "bookmark"
+        let newImage = UIImage(systemName: imageName)
+        if animated {
+            UIView.transition(
+                with: movieFavoriteImageView,
+                duration: 0.2,
+                options: .transitionCrossDissolve
+            ) {
+                self.movieFavoriteImageView.image = newImage
+            }
         } else {
-            // Fallback on earlier versions
+            movieFavoriteImageView.image = newImage
         }
     }
     
@@ -61,12 +129,6 @@ public class MovieItemCollectionViewCell: UICollectionViewCell {
         return moviePreviewImageView
     }
     
-    public override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
-        let targetSize = CGSize(width: layoutAttributes.frame.width, height: 0)
-        layoutAttributes.frame.size = contentView.systemLayoutSizeFitting(targetSize, withHorizontalFittingPriority: .required, verticalFittingPriority: .fittingSizeLevel)
-        return layoutAttributes
-    }
-    
     private func setupGesture() {
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(imageTapped(tapGestureRecognizer:)))
         favoriteView.isUserInteractionEnabled = true
@@ -74,21 +136,18 @@ public class MovieItemCollectionViewCell: UICollectionViewCell {
     }
     
     @objc
-    func imageTapped(tapGestureRecognizer: UITapGestureRecognizer)
-    {
+    func imageTapped(tapGestureRecognizer: UITapGestureRecognizer) {
+        let generator = UIImpactFeedbackGenerator(style: .medium)
+        generator.impactOccurred()
+        
+        UIView.animate(withDuration: 0.12, animations: {
+            self.favoriteView.transform = CGAffineTransform(scaleX: 1.25, y: 1.25)
+        }) { _ in
+            UIView.animate(withDuration: 0.12) {
+                self.favoriteView.transform = .identity
+            }
+        }
+        
         onFavouriteTapped?()
     }
-    
-    private func setupShadow() {
-        self.containerView.layer.cornerRadius = 12
-        self.containerView.layer.borderColor = UIColor.red.cgColor
-        self.containerView.layer.shadowOffset = CGSize(width: 10, height: 10)
-        self.containerView.layer.shadowRadius = 3
-        self.containerView.layer.shadowOpacity = 0.1
-        self.containerView.layer.shadowOffset = .zero
-        self.containerView.layer.shadowColor = UIColor.red.cgColor
-        self.containerView.clipsToBounds = true
-    }
-    
-
 }

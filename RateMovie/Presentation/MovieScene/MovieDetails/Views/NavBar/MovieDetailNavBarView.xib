@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21225" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_0" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21207"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="MovieDetailNavBarView" customModule="RateMovie" customModuleProvider="target">
+            <connections>
+                <outlet property="backButton" destination="btn-back" id="out-back"/>
+                <outlet property="favoriteButton" destination="btn-fav" id="out-fav"/>
+                <outlet property="navBlurView" destination="blur-nav" id="out-blur"/>
+                <outlet property="navTitleLabel" destination="lbl-nav-title" id="out-nav-title"/>
+                <outlet property="shareButton" destination="btn-share" id="out-share"/>
+                <outlet property="view" destination="iN0-l3-epB" id="out-view"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB">
+            <rect key="frame" x="0.0" y="0.0" width="390" height="99"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <visualEffectView opaque="NO" userInteractionEnabled="NO" alpha="0.0" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="blur-nav">
+                    <rect key="frame" x="0.0" y="0.0" width="390" height="99"/>
+                    <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="blur-content">
+                        <rect key="frame" x="0.0" y="0.0" width="390" height="99"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                    </view>
+                    <blurEffect style="systemThinMaterialDark"/>
+                </visualEffectView>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="btn-back">
+                    <rect key="frame" x="16" y="51" width="40" height="40"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="40" id="bk-w"/>
+                        <constraint firstAttribute="height" constant="40" id="bk-h"/>
+                    </constraints>
+                    <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                </button>
+                <label opaque="NO" userInteractionEnabled="NO" alpha="0.0" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Movie Title" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lbl-nav-title">
+                    <rect key="frame" x="68" y="61.333333333333336" width="222" height="19.333333333333336"/>
+                    <fontDescription key="fontDescription" type="boldSystem" pointSize="16"/>
+                    <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <stackView opaque="NO" contentMode="scaleToFill" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="stk-nav-right">
+                    <rect key="frame" x="294" y="51" width="80" height="40"/>
+                    <subviews>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="btn-share">
+                            <rect key="frame" x="0.0" y="0.0" width="40" height="40"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="40" id="shr-h"/>
+                                <constraint firstAttribute="width" constant="40" id="shr-w"/>
+                            </constraints>
+                            <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                        </button>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="btn-fav">
+                            <rect key="frame" x="40" y="0.0" width="40" height="40"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="40" id="fav-w"/>
+                                <constraint firstAttribute="height" constant="40" id="fav-h"/>
+                            </constraints>
+                            <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                        </button>
+                    </subviews>
+                </stackView>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <constraints>
+                <constraint firstItem="blur-nav" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="blr-l"/>
+                <constraint firstItem="blur-nav" firstAttribute="trailing" secondItem="iN0-l3-epB" secondAttribute="trailing" id="blr-r"/>
+                <constraint firstItem="blur-nav" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="blr-t"/>
+                <constraint firstItem="blur-nav" firstAttribute="bottom" secondItem="iN0-l3-epB" secondAttribute="bottom" id="blr-b"/>
+                <constraint firstItem="btn-back" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="16" id="nav-bk-l"/>
+                <constraint firstAttribute="bottom" secondItem="btn-back" secondAttribute="bottom" constant="8" id="nav-bk-b"/>
+                <constraint firstAttribute="trailing" secondItem="stk-nav-right" secondAttribute="trailing" constant="16" id="nav-rt-r"/>
+                <constraint firstItem="stk-nav-right" firstAttribute="centerY" secondItem="btn-back" secondAttribute="centerY" id="nav-rt-cy"/>
+                <constraint firstItem="lbl-nav-title" firstAttribute="leading" secondItem="btn-back" secondAttribute="trailing" constant="12" id="nav-ttl-l"/>
+                <constraint firstItem="stk-nav-right" firstAttribute="leading" secondItem="lbl-nav-title" secondAttribute="trailing" constant="4" id="nav-ttl-r"/>
+                <constraint firstItem="lbl-nav-title" firstAttribute="centerY" secondItem="btn-back" secondAttribute="centerY" id="nav-ttl-cy"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <point key="canvasLocation" x="139" y="20"/>
+        </view>
+    </objects>
+</document>

@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 class MovieItemCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var containerView: UIView!
@@ -23,17 +24,94 @@ class MovieItemCollectionViewCell: UICollectionViewCell {
         UINib(nibName: identifier, bundle: nil)
     }
     
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        moviePreviewImageView.contentMode = .scaleAspectFit
-        setupGesture()
-        setupShadow()
+    override var isHighlighted: Bool {
+        didSet {
+            UIView.animate(
+                withDuration: 0.2,
+                delay: 0,
+                usingSpringWithDamping: 0.8,
+                initialSpringVelocity: 0.5,
+                options: [.curveEaseInOut, .allowUserInteraction]
+            ) {
+                self.transform = self.isHighlighted ? CGAffineTransform(scaleX: 0.95, y: 0.95) : .identity
+            }
+        }
     }
     
-    override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
-        let targetSize = CGSize(width: layoutAttributes.frame.width, height: 0)
-        layoutAttributes.frame.size = contentView.systemLayoutSizeFitting(targetSize, withHorizontalFittingPriority: .required, verticalFittingPriority: .fittingSizeLevel)
-        return layoutAttributes
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        setupUI()
+        setupGesture()
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        moviePreviewImageView.kf.cancelDownloadTask()
+        moviePreviewImageView.image = nil
+        movieTitleLabel.text = nil
+        movieRateLabel.text = nil
+        movieLanguageLabel.text = nil
+        transform = .identity
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        if #available(iOS 13.0, *), traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) {
+            updateBorderColors()
+        }
+    }
+    
+    private func updateBorderColors() {
+        containerView.layer.borderColor = RMColor.borderSubtle.cgColor
+        favoriteView.layer.borderColor = RMColor.borderEmphasis.cgColor
+        movieLanguageLabel.superview?.layer.borderColor = RMColor.borderSubtle.cgColor
+    }
+    
+    private func setupUI() {
+        // Container styling & smooth ambient shadow
+        containerView.backgroundColor = RMColor.surfaceCard
+        containerView.layer.cornerRadius = 14
+        containerView.layer.borderWidth = 0.5
+        containerView.layer.borderColor = RMColor.borderSubtle.cgColor
+        containerView.layer.masksToBounds = false
+        containerView.layer.shadowColor = UIColor.black.cgColor
+        containerView.layer.shadowOpacity = 0.15
+        containerView.layer.shadowOffset = CGSize(width: 0, height: 4)
+        containerView.layer.shadowRadius = 8
+        
+        // Poster Image
+        moviePreviewImageView.contentMode = .scaleAspectFill
+        moviePreviewImageView.clipsToBounds = true
+        moviePreviewImageView.layer.cornerRadius = 14
+        moviePreviewImageView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+        moviePreviewImageView.backgroundColor = RMColor.surfaceBadge
+        
+        // Favorite button (Frosted circular look)
+        favoriteView.backgroundColor = RMColor.surfaceGlass
+        favoriteView.layer.cornerRadius = 16
+        favoriteView.clipsToBounds = true
+        favoriteView.layer.borderWidth = 0.5
+        favoriteView.layer.borderColor = RMColor.borderEmphasis.cgColor
+        
+        movieFavoriteImageView.tintColor = RMColor.accentFavorite
+        
+        // Language badge (Pill style)
+        if let langContainer = movieLanguageLabel.superview {
+            langContainer.backgroundColor = RMColor.surfaceGlass
+            langContainer.layer.cornerRadius = 6
+            langContainer.clipsToBounds = true
+            langContainer.layer.borderWidth = 0.5
+            langContainer.layer.borderColor = RMColor.borderSubtle.cgColor
+        }
+        movieLanguageLabel.textColor = RMColor.textPrimary
+        movieLanguageLabel.font = .systemFont(ofSize: 10, weight: .bold)
+        
+        // Typography
+        movieTitleLabel.textColor = RMColor.textPrimary
+        movieTitleLabel.font = .systemFont(ofSize: 13, weight: .semibold)
+        
+        movieRateLabel.textColor = RMColor.accentRating
+        movieRateLabel.font = .systemFont(ofSize: 11, weight: .semibold)
     }
     
     private func setupGesture() {
@@ -43,21 +121,88 @@ class MovieItemCollectionViewCell: UICollectionViewCell {
     }
     
     @objc
-    func imageTapped(tapGestureRecognizer: UITapGestureRecognizer)
-    {
+    func imageTapped(tapGestureRecognizer: UITapGestureRecognizer) {
+        let generator = UIImpactFeedbackGenerator(style: .medium)
+        generator.impactOccurred()
+        
+        UIView.animate(withDuration: 0.12, animations: {
+            self.favoriteView.transform = CGAffineTransform(scaleX: 1.25, y: 1.25)
+        }) { _ in
+            UIView.animate(withDuration: 0.12) {
+                self.favoriteView.transform = .identity
+            }
+        }
+        
         onFavouriteTapped?()
     }
     
-    private func setupShadow() {
-        self.containerView.layer.cornerRadius = 12
-        self.containerView.layer.borderColor = UIColor.red.cgColor
-        self.containerView.layer.shadowOffset = CGSize(width: 10, height: 10)
-        self.containerView.layer.shadowRadius = 3
-        self.containerView.layer.shadowOpacity = 0.1
-        self.containerView.layer.shadowOffset = .zero
-        self.containerView.layer.shadowColor = UIColor.red.cgColor
-        self.containerView.clipsToBounds = true
+    public func setFavorite(isFavorite: Bool, animated: Bool = false) {
+        let imageName = isFavorite ? "bookmark.fill" : "bookmark"
+        let newImage = UIImage(systemName: imageName)
+        
+        if animated {
+            UIView.transition(
+                with: movieFavoriteImageView,
+                duration: 0.2,
+                options: .transitionCrossDissolve
+            ) {
+                self.movieFavoriteImageView.image = newImage
+            }
+        } else {
+            movieFavoriteImageView.image = newImage
+        }
     }
     
-
+    public func configure(
+        title: String?,
+        rating: Double?,
+        language: String?,
+        posterPath: String?,
+        isFavorite: Bool
+    ) {
+        movieTitleLabel.text = title ?? "-"
+        
+        if let rating = rating, rating > 0 {
+            let formattedRating = String(format: "%.1f", rating)
+            movieRateLabel.text = "★ \(formattedRating)"
+            movieRateLabel.isHidden = false
+        } else {
+            movieRateLabel.text = "★ N/A"
+        }
+        
+        if let lang = language, !lang.isEmpty {
+            movieLanguageLabel.text = lang.uppercased()
+            movieLanguageLabel.superview?.isHidden = false
+        } else {
+            movieLanguageLabel.superview?.isHidden = true
+        }
+        
+        setFavorite(isFavorite: isFavorite)
+        
+        if let poster = posterPath, let imageUrl = URL(string: Endpoint.Images.baseImage + poster) {
+            moviePreviewImageView.kf.indicatorType = .activity
+            moviePreviewImageView.kf.setImage(
+                with: imageUrl,
+                placeholder: nil,
+                options: [.transition(.fade(0.25))]
+            )
+        } else {
+            moviePreviewImageView.image = UIImage(systemName: "film")
+            moviePreviewImageView.tintColor = .darkGray
+        }
+    }
+    
+    public func setView(
+        movieTitle: String,
+        movieRate: String,
+        movieLanguage: String
+    ) {
+        movieTitleLabel.text = movieTitle
+        movieRateLabel.text = movieRate
+        movieLanguageLabel.text = movieLanguage.uppercased()
+    }
+    
+    public func setMovieFavoriteImageView(status: Bool) {
+        setFavorite(isFavorite: status)
+    }
 }

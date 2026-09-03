@@ -18,19 +18,49 @@ final class RateMovieTests: XCTestCase {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-        // Any test you write for XCTest can be annotated as throws and async.
-        // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
-        // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
+    func testMovieDetailsNavBarViewModel() {
+        let navBarVM = MovieDetailNavBarViewModel(title: "Inception", isFavorite: true)
+        XCTAssertEqual(navBarVM.title, "Inception")
+        XCTAssertTrue(navBarVM.isFavorite)
     }
 
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
-        }
+    func testMovieDetailHeaderViewModel() {
+        let url = URL(string: "https://image.tmdb.org/t/p/w500/test.jpg")
+        let headerVM = MovieDetailHeaderViewModel(backdropURL: url)
+        XCTAssertEqual(headerVM.backdropURL, url)
     }
 
+    func testMovieDetailInfoViewModel() {
+        let infoVM = MovieDetailInfoViewModel(
+            posterURL: URL(string: "https://image.tmdb.org/t/p/w500/poster.jpg"),
+            title: "Interstellar",
+            tagline: "\"Mankind was born on Earth. It was never meant to die here.\"",
+            rating: "8.6",
+            voteCount: "(1.5k)",
+            releaseYear: "2014",
+            runtime: "2h 49m",
+            language: "EN"
+        )
+        XCTAssertEqual(infoVM.title, "Interstellar")
+        XCTAssertEqual(infoVM.rating, "8.6")
+        XCTAssertEqual(infoVM.releaseYear, "2014")
+        XCTAssertEqual(infoVM.runtime, "2h 49m")
+        XCTAssertEqual(infoVM.language, "EN")
+    }
+
+    func testMovieDetailGenresViewModel() {
+        let genresVM = MovieDetailGenresViewModel(genres: ["Action", "Sci-Fi", "Drama"])
+        XCTAssertEqual(genresVM.genres.count, 3)
+        XCTAssertEqual(genresVM.genres.first, "Action")
+    }
+
+    func testMovieDetailStorylineViewModel() {
+        let storylineVM = MovieDetailStorylineViewModel(overview: "A thrilling space exploration story.")
+        XCTAssertEqual(storylineVM.overview, "A thrilling space exploration story.")
+    }
+
+    func testMovieDetailSimilarViewModel() {
+        let similarVM = MovieDetailSimilarViewModel(movies: [])
+        XCTAssertTrue(similarVM.movies.isEmpty)
+    }
 }

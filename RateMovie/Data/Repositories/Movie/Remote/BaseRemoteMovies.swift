@@ -56,7 +56,7 @@ struct DefaultBaseRemoteMovies: BaseRemoteMovies {
   
   func getMovieDetails(movieId: Int, completion: @escaping (MovieDetail) -> Void) {
     AF.request(
-      Endpoint.baseURL + Endpoint.Movies.baseMovie + "\(movieId)" + Endpoint.apiKey + "&language=en-US",
+      Endpoint.baseURL + Endpoint.Movies.baseMovie + "/\(movieId)" + Endpoint.apiKey + "&language=en-US",
       method: .get,
       encoding: JSONEncoding.default
     )
@@ -65,8 +65,8 @@ struct DefaultBaseRemoteMovies: BaseRemoteMovies {
       switch data.result {
       case .success(let data):
         completion(data)
-      case .failure:
-        break
+      case .failure(let error):
+        print("[-] getMovieDetails error: \(error.localizedDescription)")
       }
     }
   }

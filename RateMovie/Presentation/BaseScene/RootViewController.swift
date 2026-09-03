@@ -25,13 +25,15 @@ class RootViewController: UINavigationController {
   }
     
   private func setNavigationBar() {
+    navigationBar.tintColor = RMColor.brandPrimary
     
     if #available(iOS 13.0, *) {
       let appearance = UINavigationBarAppearance()
-      appearance.configureWithTransparentBackground()
-        appearance.backgroundColor = .orange
-      appearance.titleTextAttributes = [.foregroundColor: UIColor.white]
-      appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
+      appearance.configureWithDefaultBackground()
+      appearance.backgroundColor = RMColor.backgroundPrimary
+      appearance.shadowColor = RMColor.borderSubtle
+      appearance.titleTextAttributes = [.foregroundColor: RMColor.textPrimary]
+      appearance.largeTitleTextAttributes = [.foregroundColor: RMColor.textPrimary]
       navigationBar.compactAppearance = appearance
       navigationBar.standardAppearance = appearance
       navigationBar.scrollEdgeAppearance = appearance
@@ -69,27 +71,29 @@ class RootViewController: UINavigationController {
     }
   }
   
-    public func setBackgroundColor(with color: UIColor? = .orange, titleColor: UIColor? = .white) {
+  public func setBackgroundColor(with color: UIColor? = RMColor.backgroundPrimary, titleColor: UIColor? = RMColor.textPrimary) {
     if #available(iOS 13.0, *) {
-      navigationBar.compactAppearance?.backgroundColor = color
-      navigationBar.scrollEdgeAppearance?.backgroundColor = color
-      navigationBar.standardAppearance.backgroundColor = color
-      navigationBar.compactAppearance?.titleTextAttributes = [.foregroundColor: titleColor!]
-      navigationBar.scrollEdgeAppearance?.titleTextAttributes = [.foregroundColor: titleColor!]
-      navigationBar.standardAppearance.titleTextAttributes = [.foregroundColor: titleColor!]
+      let appearance = UINavigationBarAppearance()
+      appearance.configureWithDefaultBackground()
+      appearance.backgroundColor = color
+      appearance.shadowColor = RMColor.borderSubtle
+      appearance.titleTextAttributes = [.foregroundColor: titleColor ?? RMColor.textPrimary]
+      appearance.largeTitleTextAttributes = [.foregroundColor: titleColor ?? RMColor.textPrimary]
+      navigationBar.compactAppearance = appearance
+      navigationBar.scrollEdgeAppearance = appearance
+      navigationBar.standardAppearance = appearance
     } else if self.currentVersion <= 12.9 {
       self.setBackgroundWithImage()
       navigationBar.shouldRemoveShadow(true)
     }
-    
   }
     
-    override var preferredStatusBarStyle : UIStatusBarStyle {
-        if let topVC = viewControllers.last {
-            return topVC.preferredStatusBarStyle
-        }
-        return .default
+  override var preferredStatusBarStyle : UIStatusBarStyle {
+    if #available(iOS 13.0, *) {
+      return traitCollection.userInterfaceStyle == .dark ? .lightContent : .darkContent
     }
+    return .lightContent
+  }
 }
 
 extension UINavigationItem {
@@ -110,24 +114,17 @@ extension UINavigationItem {
 protocol WhiteNavBar {}
 extension WhiteNavBar where Self: UIViewController {
 
-  
   func setNavigationBackground() {
     if let nav = navigationController as? RootViewController {
-        nav.setBackgroundColor(with: .white, titleColor: .orange)
-      nav.setBackgroundWithImage(backgroundColor: .white)
-      nav.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.orange]
-        nav.navigationBar.layer.shadowColor = UIColor.gray.cgColor
-      nav.navigationBar.layer.shadowOffset = CGSize(width: 0.0, height: 0.5)
-      nav.navigationBar.layer.shadowRadius = 0.5
-      nav.navigationBar.layer.shadowOpacity = 1.0
+      nav.setBackgroundColor(with: RMColor.surfaceCard, titleColor: RMColor.textPrimary)
+      nav.navigationBar.tintColor = RMColor.brandPrimary
     }
   }
   
   func resetNavigationBackground() {
     if let nav = navigationController as? RootViewController {
-        nav.setBackgroundColor(with: .orange, titleColor: .white)
-      nav.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.white]
-      nav.navigationBar.layer.shadowColor = UIColor.clear.cgColor
+      nav.setBackgroundColor(with: RMColor.backgroundPrimary, titleColor: RMColor.textPrimary)
+      nav.navigationBar.tintColor = RMColor.brandPrimary
     }
   }
 }
@@ -137,21 +134,15 @@ extension RedNavBar where Self: UIViewController {
 
     func setNavigationBackground() {
       if let nav = navigationController as? RootViewController {
-          nav.setBackgroundColor(with: hexStringToUIColor(hex: "831010"), titleColor: .white)
-          nav.setBackgroundWithImage(backgroundColor: .white)
-        nav.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.black ]
-          nav.navigationBar.layer.shadowColor = UIColor.gray.cgColor
-          nav.navigationBar.layer.shadowOffset = CGSize(width: 0.0, height: 0.5)
-          nav.navigationBar.layer.shadowRadius = 0.5
-          nav.navigationBar.layer.shadowOpacity = 1.0
+          nav.setBackgroundColor(with: RMColor.backgroundPrimary, titleColor: RMColor.textPrimary)
+          nav.navigationBar.tintColor = RMColor.brandPrimary
       }
     }
     
     func resetNavigationBackground() {
         if let nav = navigationController as? RootViewController {
-            nav.setBackgroundColor(with: .red, titleColor: .white)
-            nav.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.white]
-            nav.navigationBar.layer.shadowColor = UIColor.clear.cgColor
+            nav.setBackgroundColor(with: RMColor.backgroundPrimary, titleColor: RMColor.textPrimary)
+            nav.navigationBar.tintColor = RMColor.brandPrimary
         }
     }
 }
@@ -160,63 +151,38 @@ protocol ClearNavBar{}
 extension ClearNavBar where Self: UIViewController {
     func setNavigationBackground() {
       if let nav = navigationController as? RootViewController {
-          nav.setBackgroundColor(with: .clear)
+          nav.setBackgroundColor(with: .clear, titleColor: RMColor.textPrimary)
           nav.setBackgroundImageToNil()
           nav.navigationBarIsTranslucent(true)
-          
-          nav.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.black]
-          nav.navigationBar.layer.shadowColor = UIColor.gray.cgColor
-          nav.navigationBar.layer.shadowOffset = CGSize(width: 0.0, height: 0.5)
-          nav.navigationBar.layer.shadowRadius = 0.5
-          nav.navigationBar.layer.shadowOpacity = 1.0
+          nav.navigationBar.tintColor = RMColor.brandPrimary
       }
-
     }
     
     func resetNavigationBackground() {
         if let nav = navigationController as? RootViewController {
-            nav.setBackgroundColor(with: .orange, titleColor: .white)
-            nav.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.white]
-            nav.navigationBar.layer.shadowColor = UIColor.clear.cgColor
-            
-            nav.setBackgroundColor()
-            nav.navigationBarIsTranslucent(false)
-            nav.setBackgroundWithImage()
+            nav.setBackgroundColor(with: RMColor.backgroundPrimary, titleColor: RMColor.textPrimary)
+            nav.navigationBar.tintColor = RMColor.brandPrimary
         }
     }
-    
 }
 
 protocol ShadowNavBar{}
 extension ShadowNavBar where Self: UIViewController {
-    
     func setNavigationBackground() {
       if let nav = navigationController as? RootViewController {
           nav.navigationBar.shadowImage = UIImage()
           nav.navigationBar.isTranslucent = true
           nav.navigationBar.setBackgroundImage(UIImage(), for: .default)
-          
-          nav.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.black]
-          nav.navigationBar.layer.shadowColor = UIColor.gray.cgColor
-          nav.navigationBar.layer.shadowOffset = CGSize(width: 0.0, height: 0.5)
-          nav.navigationBar.layer.shadowRadius = 0.5
-          nav.navigationBar.layer.shadowOpacity = 1.0
+          nav.navigationBar.titleTextAttributes = [.foregroundColor: RMColor.textPrimary]
+          nav.navigationBar.tintColor = RMColor.brandPrimary
       }
-//        setLightStatusBar()
-
     }
     
     func resetNavigationBackground() {
         if let nav = navigationController as? RootViewController {
-            nav.setBackgroundColor(with: .orange, titleColor: .white)
-            nav.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.white]
-            nav.navigationBar.layer.shadowColor = UIColor.clear.cgColor
-            
-            nav.setBackgroundColor()
-            nav.navigationBarIsTranslucent(false)
-            nav.setBackgroundWithImage()
+            nav.setBackgroundColor(with: RMColor.backgroundPrimary, titleColor: RMColor.textPrimary)
+            nav.navigationBar.tintColor = RMColor.brandPrimary
         }
     }
-    
 }
 
