@@ -439,6 +439,72 @@ final class RateMovieTests: XCTestCase {
         
         waitForExpectations(timeout: 2.0, handler: nil)
     }
+    
+    func testBookingConfirmationSavesToCoreDataAndPushesTicketPass() {
+        let movieDetailsVC = MovieDetailsViewController()
+        movieDetailsVC.loadViewIfNeeded()
+        
+        let nav = UINavigationController(rootViewController: movieDetailsVC)
+        
+        let expectation = expectation(description: "Save Ticket to Core Data and Push Ticket Pass")
+        
+        let testTicketId = "TEST-PAY-\(UUID().uuidString.prefix(6))"
+        let testSummary = SeatBookingSummary(
+            ticketId: testTicketId,
+            movieId: 777,
+            movieTitle: "Gladiator II",
+            date: "05 Sep",
+            time: "20:00",
+            seats: "F3, F4",
+            selectedSeatsList: ["F3", "F4"],
+            totalPrice: 100_000.0,
+            cinemaHall: "Hall 1 - Dolby Atmos"
+        )
+        
+        movieDetailsVC.handleBookingConfirmation(summary: testSummary) { result in
+            switch result {
+            case .success(let savedTicket):
+                XCTAssertEqual(savedTicket.ticketId, testTicketId)
+                XCTAssertEqual(savedTicket.movieTitle, "Gladiator II")
+                XCTAssertEqual(savedTicket.seats, "F3, F4")
+                
+                // Verify TicketPassViewController is pushed
+                XCTAssertEqual(nav.viewControllers.count, 2)
+                guard let ticketPassVC = nav.viewControllers.last as? TicketPassViewController else {
+                    XCTFail("Top view controller should be TicketPassViewController")
+                    expectation.fulfill()
+                    return
+                }
+                ticketPassVC.loadViewIfNeeded()
+                XCTAssertEqual(ticketPassVC.movieTitleLabel.text, "Gladiator II")
+                XCTAssertEqual(ticketPassVC.seatsLabel.text, "F3, F4")
+                XCTAssertEqual(ticketPassVC.ticketIdLabel.text, testTicketId)
+                
+                // Verify fetched from TicketPersistenceManager
+                TicketPersistenceManager.shared.fetchTicket(by: testTicketId) { fetchResult in
+                    switch fetchResult {
+                    case .success(let fetchedTicket):
+                        XCTAssertNotNil(fetchedTicket)
+                        XCTAssertEqual(fetchedTicket?.ticketId, testTicketId)
+                        XCTAssertEqual(fetchedTicket?.movieTitle, "Gladiator II")
+                        
+                        // Clean up
+                        TicketPersistenceManager.shared.deleteTicket(by: testTicketId) { _ in
+                            expectation.fulfill()
+                        }
+                    case .failure(let error):
+                        XCTFail("Failed to fetch saved ticket from Core Data: \(error)")
+                        expectation.fulfill()
+                    }
+                }
+            case .failure(let error):
+                XCTFail("Booking confirmation failed to save to Core Data: \(error)")
+                expectation.fulfill()
+            }
+        }
+        
+        waitForExpectations(timeout: 5.0, handler: nil)
+    }
 }
 
 

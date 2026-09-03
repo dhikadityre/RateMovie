@@ -55,6 +55,9 @@ class MovieDetailsViewController: UIViewController {
     
     // MARK: - ViewModel
     var viewModel: MovieDetailsViewModel?
+    
+    // MARK: - Persistence Manager
+    public var ticketPersistenceManager: TicketPersistenceManagerProtocol = TicketPersistenceManager.shared
 }
 
 // MARK: - Lifecycle
@@ -273,12 +276,38 @@ extension MovieDetailsViewController {
         
         let bookingVM = SeatBookingViewModel(
             movieId: movieId,
-            movieTitle: movieTitle
+            movieTitle: movieTitle,
+            onConfirmBooking: { [weak self] summary in
+                self?.handleBookingConfirmation(summary: summary)
+            }
         )
         let bookingView = SeatBookingView(viewModel: bookingVM)
         let hostingController = UIHostingController(rootView: bookingView)
         hostingController.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(hostingController, animated: true)
+    }
+    
+    public func handleBookingConfirmation(summary: SeatBookingSummary, completion: ((Result<TicketModel, Error>) -> Void)? = nil) {
+        let ticketModel = summary.toTicketModel()
+        ticketPersistenceManager.saveTicket(ticketModel) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let savedTicket):
+                let ticketPassVC = TicketPassViewController(summary: summary, onDone: { [weak self] in
+                    guard let self = self else { return }
+                    self.navigationController?.popToViewController(self, animated: true)
+                })
+                self.navigationController?.pushViewController(ticketPassVC, animated: true)
+                completion?(.success(savedTicket))
+            case .failure(let error):
+                let ticketPassVC = TicketPassViewController(summary: summary, onDone: { [weak self] in
+                    guard let self = self else { return }
+                    self.navigationController?.popToViewController(self, animated: true)
+                })
+                self.navigationController?.pushViewController(ticketPassVC, animated: true)
+                completion?(.failure(error))
+            }
+        }
     }
 }
 
