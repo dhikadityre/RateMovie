@@ -11,7 +11,7 @@ import UIKit
 class TabBarController: UITabBarController {
   override func viewDidLoad() {
     super.viewDidLoad()
-    setupView()
+    setupTabBarAppearance()
     createBaseTabBar()
   }
   
@@ -27,32 +27,30 @@ class TabBarController: UITabBarController {
     ]
   }
   
-  private func setupView() {
+  private func setupTabBarAppearance() {
     tabBar.tintColor = .systemRed
-    self.view.layer.borderColor = UIColor.gray.cgColor
-    self.view.layer.shadowOffset = CGSize(width: 10, height: 10)
-    self.view.layer.shadowRadius = 3
-    self.view.layer.shadowOpacity = 0.1
-    self.view.layer.shadowOffset = .zero
-    self.view.layer.shadowColor = UIColor.black.cgColor
-    self.view.clipsToBounds = true
+    tabBar.unselectedItemTintColor = .systemGray
+    
+    if #available(iOS 15.0, *) {
+      let appearance = UITabBarAppearance()
+      appearance.configureWithDefaultBackground()
+      appearance.backgroundColor = .systemBackground
+      
+      tabBar.standardAppearance = appearance
+      tabBar.scrollEdgeAppearance = appearance
+    } else if #available(iOS 13.0, *) {
+      let appearance = UITabBarAppearance()
+      appearance.configureWithOpaqueBackground()
+      appearance.backgroundColor = .systemBackground
+      
+      tabBar.standardAppearance = appearance
+    } else {
+      tabBar.barTintColor = .white
+    }
   }
   
-  func moveToFavoritesController(){
-    let controller = MovieFavouritesViewController()
-    controller.viewModel = DefaultMovieFavouritesViewModel(
-      useCase: DefaultMovieFavoritesUseCase(
-        repository: DefaultBaseMovieRepository(
-          remoteData: DefaultBaseRemoteMovies(),
-          localData: DefaultBaseLocalMovies()
-        )
-      )
-    )
-    let navigation = RootViewController(
-      rootViewController: controller
-    )
-    self.navigationController?.pushViewController(navigation, animated: true)
-    self.selectedIndex = 2
+  func moveToFavoritesController() {
+    self.selectedIndex = 1
   }
 }
 
@@ -99,20 +97,11 @@ extension TabBarController {
         )
       )
     )
-    movieFavouritesController.tabBarItem.title = "Favourite"
+    movieFavouritesController.tabBarItem.title = "Favorite"
     movieFavouritesController.tabBarItem.image = UIImage(systemName: "star")
     movieFavouritesController.tabBarItem.selectedImage = UIImage(systemName: "star.fill")
     return movieFavouritesController
   }
-  
-  private func createDetailMovieTab() -> UIViewController {
-    let movieDetailController = MovieDetailsViewController()
-    movieDetailController.tabBarItem.title = "Detail"
-    movieDetailController.tabBarItem.image = UIImage(systemName: "star")
-    movieDetailController.tabBarItem.selectedImage = UIImage(systemName: "star.fill")
-    return movieDetailController
-  }
-  
 }
 
 extension UIViewController: UINavigationControllerDelegate {

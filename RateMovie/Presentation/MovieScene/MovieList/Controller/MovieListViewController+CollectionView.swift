@@ -76,6 +76,7 @@ extension MovieListViewController: UICollectionViewDelegate, UICollectionViewDat
             let data = viewModel?.movieList.value[indexPath.row]
         else { return }
         let vc = MovieDetailsViewController()
+        vc.hidesBottomBarWhenPushed = true
         if let movieId = data.id {
             let vm = DefaultMovieDetailsViewModel(
                 movieId: movieId,

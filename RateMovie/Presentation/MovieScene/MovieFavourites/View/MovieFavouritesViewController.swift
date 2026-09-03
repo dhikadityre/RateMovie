@@ -27,6 +27,10 @@ extension MovieFavouritesViewController {
         configureTableView()
         bind()
     }
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        resetNavigationBackground()
+    }
 }
 
 extension MovieFavouritesViewController {
