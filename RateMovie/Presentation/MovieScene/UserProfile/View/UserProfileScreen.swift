@@ -1,5 +1,5 @@
 //
-//  UserProfileView.swift
+//  UserProfileScreen.swift
 //  RateMovie
 //
 //  Created by DHIKA ADITYA ARE on 03/09/26.
@@ -7,10 +7,10 @@
 
 import SwiftUI
 
-struct UserProfileView: View {
-    @ObservedObject var viewModel: UserProfileViewModel
+struct UserProfileScreen: View {
+    @ObservedObject var viewModel: UserProfileScreenViewModel
     
-    init(viewModel: UserProfileViewModel = UserProfileViewModel()) {
+    init(viewModel: UserProfileScreenViewModel = UserProfileScreenViewModel()) {
         self.viewModel = viewModel
     }
     
@@ -49,7 +49,7 @@ struct UserProfileView: View {
 }
 
 // MARK: - Header Profile Card
-extension UserProfileView {
+extension UserProfileScreen {
     private func renderAvatarView() -> some View {
         ZStack {
             Circle()
@@ -137,7 +137,7 @@ extension UserProfileView {
 }
 
 // MARK: - Core Data Statistics Grid
-extension UserProfileView {
+extension UserProfileScreen {
     private func renderStatCard(
         title: String,
         value: String,
@@ -235,7 +235,7 @@ extension UserProfileView {
 }
 
 // MARK: - Navigation Action Section
-extension UserProfileView {
+extension UserProfileScreen {
     private func renderActionRow(
         icon: String,
         iconBgColor: Color,
@@ -333,7 +333,7 @@ extension UserProfileView {
 }
 
 // MARK: - Recent Tickets Section
-extension UserProfileView {
+extension UserProfileScreen {
     private func renderRecentTicketsSection() -> some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack {
@@ -404,8 +404,8 @@ extension UserProfileView {
     }
 }
 
-// MARK: - Perks Card
-extension UserProfileView {
+// MARK: - VIP Perks Card
+extension UserProfileScreen {
     private func renderPerksCard() -> some View {
         HStack(spacing: 14) {
             ZStack {
@@ -442,8 +442,8 @@ extension UserProfileView {
     }
 }
 
-// MARK: - Preferences Section
-extension UserProfileView {
+// MARK: - Preferences & Support Section
+extension UserProfileScreen {
     private func renderPreferenceRow(icon: String, title: String, value: String) -> some View {
         HStack(spacing: 12) {
             Image(systemName: icon)
@@ -493,11 +493,11 @@ extension UserProfileView {
 }
 
 #if DEBUG
-struct UserProfileView_Previews: PreviewProvider {
+struct UserProfileScreen_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            UserProfileView(
-                viewModel: UserProfileViewModel(
+            UserProfileScreen(
+                viewModel: UserProfileScreenViewModel(
                     profile: UserProfileModel(
                         name: "Dhika Aditya",
                         email: "dhika.aditya@ratemovie.io",
@@ -512,8 +512,8 @@ struct UserProfileView_Previews: PreviewProvider {
             )
             .preferredColorScheme(.dark)
             
-            UserProfileView(
-                viewModel: UserProfileViewModel(
+            UserProfileScreen(
+                viewModel: UserProfileScreenViewModel(
                     profile: UserProfileModel(
                         name: "Dhika Aditya",
                         email: "dhika.aditya@ratemovie.io",

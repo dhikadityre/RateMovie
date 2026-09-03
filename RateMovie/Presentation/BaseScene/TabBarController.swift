@@ -96,8 +96,8 @@ extension TabBarController {
     return movieListController
   }
   
-  func createUserProfileTab(profileViewModel: UserProfileViewModel = UserProfileViewModel()) -> UIViewController {
-    let userProfileView = UserProfileView(viewModel: profileViewModel)
+  func createUserProfileTab(profileViewModel: UserProfileScreenViewModel = UserProfileScreenViewModel()) -> UIViewController {
+    let userProfileView = UserProfileScreen(viewModel: profileViewModel)
     let profileHostingController = UIHostingController(rootView: userProfileView)
     
     profileViewModel.onNavigateToFavorites = { [weak self, weak profileHostingController] in

@@ -1,5 +1,5 @@
 //
-//  UserProfileViewModel.swift
+//  UserProfileScreenViewModel.swift
 //  RateMovie
 //
 //  Created by DHIKA ADITYA ARE on 03/09/26.
@@ -8,7 +8,7 @@
 import Foundation
 import Combine
 
-final class UserProfileViewModel: ObservableObject {
+final class UserProfileScreenViewModel: ObservableObject {
     @Published var profile: UserProfileModel
     @Published var isLoading: Bool = false
     @Published var recentTickets: [TicketModel] = []

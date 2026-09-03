@@ -1,5 +1,5 @@
 //
-//  SeatBookingViewModel.swift
+//  SeatBookingScreenViewModel.swift
 //  RateMovie
 //
 //  Created by DHIKA ADITYA ARE on 03/09/26.
@@ -8,7 +8,7 @@
 import Foundation
 import Combine
 
-public final class SeatBookingViewModel: ObservableObject {
+public final class SeatBookingScreenViewModel: ObservableObject {
     public let movieId: Int?
     public let movieTitle: String
     public let cinemaHall: String

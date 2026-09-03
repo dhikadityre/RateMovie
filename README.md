@@ -55,9 +55,9 @@ graph TD
     end
 
     subgraph SwiftUI Views & Components
-        E["UserProfileView<br/>(SwiftUI View)"]
-        F["SeatBookingView<br/>(SwiftUI View)"]
-        G["InteractiveRatingWidgetView<br/>(SwiftUI Component)"]
+        E["UserProfileScreen<br/>(SwiftUI Screen)"]
+        F["SeatBookingScreen<br/>(SwiftUI Screen)"]
+        G["InteractiveRatingWidgetViewSUI<br/>(SwiftUI Component)"]
     end
 
     A -->|1. Root Tab Hosting| E
@@ -74,23 +74,23 @@ graph TD
 
 | Komponen Asal (*Source*) | Komponen Tujuan (*Target*) | Arah | Mekanisme Komunikasi | Data / Event yang Dikirim |
 |---|---|:---:|---|---|
-| **`TabBarController`** *(UIKit)* | **`UserProfileView`** *(SwiftUI)* | `UIKit ➡️ SwiftUI` | `UIHostingController` sebagai tab root controller | Inisialisasi ViewModel, DI `MovieFavoritesUseCase` & `TicketPersistenceManager` |
-| **`MovieDetailsViewController`** *(UIKit)* | **`InteractiveRatingWidgetView`** *(SwiftUI)* | `UIKit ➡️ SwiftUI` | *Child View Controller Containment* ke dalam `UIStackView` | Inisialisasi rating range, `movieTitle`, dan theme |
-| **`InteractiveRatingWidgetView`** *(SwiftUI)* | **`MovieDetailsViewController`** *(UIKit)* | `SwiftUI ➡️ UIKit` | Closure Delegate Callback (`onRatingSubmitted`) | Nilai skor rating (Int: 1–5), memicu `TTGSnackbar` di UIKit |
-| **`MovieDetailsViewController`** *(UIKit)* | **`SeatBookingView`** *(SwiftUI)* | `UIKit ➡️ SwiftUI` | `UIHostingController` via `navigationController.pushViewController` | `movieId`, `movieTitle`, callback booking handler |
-| **`SeatBookingView`** *(SwiftUI)* | **`MovieDetailsViewController`** *(UIKit)* | `SwiftUI ➡️ UIKit` | Closure Delegate Callback (`onConfirmBooking`) | Struct `SeatBookingSummary` (kursi, jadwal, harga, studio) |
+| **`TabBarController`** *(UIKit)* | **`UserProfileScreen`** *(SwiftUI)* | `UIKit ➡️ SwiftUI` | `UIHostingController` sebagai tab root controller | Inisialisasi ViewModel, DI `MovieFavoritesUseCase` & `TicketPersistenceManager` |
+| **`MovieDetailsViewController`** *(UIKit)* | **`InteractiveRatingWidgetViewSUI`** *(SwiftUI)* | `UIKit ➡️ SwiftUI` | *Child View Controller Containment* ke dalam `UIStackView` | Inisialisasi rating range, `movieTitle`, dan theme |
+| **`InteractiveRatingWidgetViewSUI`** *(SwiftUI)* | **`MovieDetailsViewController`** *(UIKit)* | `SwiftUI ➡️ UIKit` | Closure Delegate Callback (`onRatingSubmitted`) | Nilai skor rating (Int: 1–5), memicu `TTGSnackbar` di UIKit |
+| **`MovieDetailsViewController`** *(UIKit)* | **`SeatBookingScreen`** *(SwiftUI)* | `UIKit ➡️ SwiftUI` | `UIHostingController` via `navigationController.pushViewController` | `movieId`, `movieTitle`, callback booking handler |
+| **`SeatBookingScreen`** *(SwiftUI)* | **`MovieDetailsViewController`** *(UIKit)* | `SwiftUI ➡️ UIKit` | Closure Delegate Callback (`onConfirmBooking`) | Struct `SeatBookingSummary` (kursi, jadwal, harga, studio) |
 | **`MovieDetailsViewController`** *(UIKit)* | **`TicketPassViewController`** *(UIKit)* | `UIKit ➡️ UIKit` | Transisi UIKit standar setelah persistensi Core Data | Objek `SeatBookingSummary` / `TicketModel` tersimpan |
-| **`UserProfileView`** *(SwiftUI)* | **`MovieFavouritesViewController`** *(UIKit)* | `SwiftUI ➡️ UIKit` | Closure Handler (`onNavigateToFavorites`) ke UINavigationController | Permintaan navigasi ke daftar favorit |
-| **`UserProfileView`** *(SwiftUI)* | **`TicketPassViewController`** *(UIKit)* | `SwiftUI ➡️ UIKit` | Closure Handler (`onNavigateToTickets`) ke UINavigationController | Permintaan navigasi ke riwayat tiket |
+| **`UserProfileScreen`** *(SwiftUI)* | **`MovieFavouritesViewController`** *(UIKit)* | `SwiftUI ➡️ UIKit` | Closure Handler (`onNavigateToFavorites`) ke UINavigationController | Permintaan navigasi ke daftar favorit |
+| **`UserProfileScreen`** *(SwiftUI)* | **`TicketPassViewController`** *(UIKit)* | `SwiftUI ➡️ UIKit` | Closure Handler (`onNavigateToTickets`) ke UINavigationController | Permintaan navigasi ke riwayat tiket |
 
 ---
 
 ### 🧩 Rincian Bagaimana UIKit & SwiftUI Berkomunikasi
 
 #### 1. Menyematkan Komponen SwiftUI ke Layar UIKit (*In-Screen Component Embedding*)
-* **Partisipan:** `MovieDetailsViewController` (UIKit) ↔ `InteractiveRatingWidgetView` (SwiftUI)
+* **Partisipan:** `MovieDetailsViewController` (UIKit) ↔ `InteractiveRatingWidgetViewSUI` (SwiftUI)
 * **Bagaimana:**
-  1. UIKit membuat instance `InteractiveRatingWidgetViewModel` dengan callback `onRatingSubmitted`.
+  1. UIKit membuat instance `InteractiveRatingWidgetViewModelSUI` dengan callback `onRatingSubmitted`.
   2. UIKit membungkus View SwiftUI ke dalam `UIHostingController(rootView: ...)`.
   3. Menggunakan pola resmi **Child View Controller Containment** (`addChild`, `insertArrangedSubview`, `didMove(toParent:)`) agar lifecycle event (viewWillAppear, layout, traits) diteruskan sempurna.
   4. Ketika user memilih bintang dan menekan *Submit*, SwiftUI memicu closure yang mengeksekusi method native UIKit untuk menampilkan snackbar konfirmasi:
@@ -98,13 +98,13 @@ graph TD
 ```swift
 // Di dalam MovieDetailsViewController.swift (UIKit)
 private func setupRatingWidget() {
-    let ratingVM = InteractiveRatingWidgetViewModel(
+    let ratingVM = InteractiveRatingWidgetViewModelSUI(
         movieTitle: viewModel?.title,
         onRatingSubmitted: { [weak self] score in
             self?.snakeBarGreen(message: "Terima kasih atas rating Anda (\(score)★)!")
         }
     )
-    let hostingController = UIHostingController(rootView: InteractiveRatingWidgetView(viewModel: ratingVM))
+    let hostingController = UIHostingController(rootView: InteractiveRatingWidgetViewSUI(viewModel: ratingVM))
     hostingController.view.backgroundColor = .clear
 
     addChild(hostingController)
@@ -114,23 +114,23 @@ private func setupRatingWidget() {
 ```
 
 #### 2. Navigasi Layar Penuh UIKit ke SwiftUI (*Full-Screen Push Navigation*)
-* **Partisipan:** `MovieDetailsViewController` (UIKit) ➡️ `SeatBookingView` (SwiftUI)
+* **Partisipan:** `MovieDetailsViewController` (UIKit) ➡️ `SeatBookingScreen` (SwiftUI)
 * **Bagaimana:**
   1. Pengguna menekan tombol native UIButton *"Book Ticket"* di UIKit.
-  2. UIKit menginstansiasi `SeatBookingViewModel` dengan parameter `movieId`, `movieTitle`, serta closure `onConfirmBooking`.
-  3. Mengemas `SeatBookingView` ke dalam `UIHostingController` dan melakukan `pushViewController` pada `navigationController`:
+  2. UIKit menginstansiasi `SeatBookingScreenViewModel` dengan parameter `movieId`, `movieTitle`, serta closure `onConfirmBooking`.
+  3. Mengemas `SeatBookingScreen` ke dalam `UIHostingController` dan melakukan `pushViewController` pada `navigationController`:
 
 ```swift
 // Di dalam MovieDetailsViewController.swift (UIKit)
 @objc func didTapBookTicket() {
-    let bookingVM = SeatBookingViewModel(
+    let bookingVM = SeatBookingScreenViewModel(
         movieId: viewModel?.getMovieId(),
         movieTitle: viewModel?.title ?? "Movie Details",
         onConfirmBooking: { [weak self] summary in
             self?.handleBookingConfirmation(summary: summary)
         }
     )
-    let bookingView = SeatBookingView(viewModel: bookingVM)
+    let bookingView = SeatBookingScreen(viewModel: bookingVM)
     let hostingController = UIHostingController(rootView: bookingView)
     hostingController.hidesBottomBarWhenPushed = true
     navigationController?.pushViewController(hostingController, animated: true)
@@ -138,7 +138,7 @@ private func setupRatingWidget() {
 ```
 
 #### 3. Mengirim Data Balik dari SwiftUI & Menyimpan ke Core Data (*Data Handover & Persistence*)
-* **Partisipan:** `SeatBookingView` (SwiftUI) ➡️ `MovieDetailsViewController` (UIKit) ➡️ `TicketPassViewController` (UIKit)
+* **Partisipan:** `SeatBookingScreen` (SwiftUI) ➡️ `MovieDetailsViewController` (UIKit) ➡️ `TicketPassViewController` (UIKit)
 * **Bagaimana:**
   1. Setelah user memilih kursi di SwiftUI, tombol checkout memicu closure `onConfirmBooking(summary)`.
   2. Kontrol kembali ke UIKit `MovieDetailsViewController.handleBookingConfirmation(summary:)`.
@@ -160,16 +160,16 @@ public func handleBookingConfirmation(summary: SeatBookingSummary) {
 ```
 
 #### 4. Navigasi SwiftUI ke Layar UIKit (*SwiftUI to UIKit Deep Navigation*)
-* **Partisipan:** `UserProfileView` (SwiftUI) ➡️ `MovieFavouritesViewController` (UIKit)
+* **Partisipan:** `UserProfileScreen` (SwiftUI) ➡️ `MovieFavouritesViewController` (UIKit)
 * **Bagaimana:**
-  1. Di dalam `TabBarController` (UIKit), `UserProfileView` diinisialisasi dan di-wrap ke dalam `UIHostingController`.
+  1. Di dalam `TabBarController` (UIKit), `UserProfileScreen` diinisialisasi dan di-wrap ke dalam `UIHostingController`.
   2. `TabBarController` mengikat *callback closure* (`onNavigateToFavorites`) ke ViewModel SwiftUI.
   3. Saat user menekan tombol menu di SwiftUI, closure dipanggil dan `UINavigationController` UIKit melakukan *push* layar `MovieFavouritesViewController` yang murni berbasis UIKit:
 
 ```swift
 // Di dalam TabBarController.swift (UIKit)
-func createUserProfileTab(profileViewModel: UserProfileViewModel = UserProfileViewModel()) -> UIViewController {
-    let userProfileView = UserProfileView(viewModel: profileViewModel)
+func createUserProfileTab(profileViewModel: UserProfileScreenViewModel = UserProfileScreenViewModel()) -> UIViewController {
+    let userProfileView = UserProfileScreen(viewModel: profileViewModel)
     let profileHostingController = UIHostingController(rootView: userProfileView)
     
     profileViewModel.onNavigateToFavorites = { [weak self, weak profileHostingController] in
@@ -185,7 +185,7 @@ func createUserProfileTab(profileViewModel: UserProfileViewModel = UserProfileVi
 
 #### 5. Sinkronisasi Data & Shared State Antar Framework
 * **Mekanisme Single Source of Truth:**
-  - **Core Data Storage:** Baik layer UIKit (seperti `MovieFavouritesViewController` & `TicketPassViewController`) maupun SwiftUI (seperti `UserProfileView` statistik) mengakses data melalui protokol domain (`MovieFavoritesUseCaseProtocol` & `TicketPersistenceManagerProtocol`).
+  - **Core Data Storage:** Baik layer UIKit (seperti `MovieFavouritesViewController` & `TicketPassViewController`) maupun SwiftUI (seperti `UserProfileScreen` statistik) mengakses data melalui protokol domain (`MovieFavoritesUseCaseProtocol` & `TicketPersistenceManagerProtocol`).
   - **Reactive State (`ObservableObject` & `@Published`):** Ketika layar SwiftUI aktif (`.onAppear`), ViewModel SwiftUI memanggil data Core Data secara *asynchronous* (menggunakan `DispatchGroup`) dan secara otomatis memperbarui UI SwiftUI secara reaktif.
 
 ---
@@ -255,10 +255,10 @@ sequenceDiagram
     participant ListVC as "MovieListVC (UIKit)"
     participant DetailVC as "MovieDetailsVC (UIKit)"
     participant RatingWidget as "RatingWidget (SwiftUI)"
-    participant SeatBooking as "SeatBookingView (SwiftUI)"
+    participant SeatBooking as "SeatBookingScreen (SwiftUI)"
     participant TicketVC as "TicketPassVC (UIKit)"
     participant CoreData as "Core Data Storage"
-    participant ProfileView as "UserProfileView (SwiftUI)"
+    participant ProfileView as "UserProfileScreen (SwiftUI)"
 
     User->>TabBar: Buka Aplikasi
     TabBar->>ListVC: Tampilkan Tab Movie List
@@ -272,7 +272,7 @@ sequenceDiagram
     end
 
     User->>DetailVC: Tap "Book Ticket"
-    DetailVC->>SeatBooking: Push UIHostingController(SeatBookingView)
+    DetailVC->>SeatBooking: Push UIHostingController(SeatBookingScreen)
     User->>SeatBooking: Pilih Tanggal, Jam & Kursi Bioskop
     User->>SeatBooking: Konfirmasi Booking
     SeatBooking->>DetailVC: Callback onConfirmBooking(summary)
@@ -281,7 +281,7 @@ sequenceDiagram
     TicketVC-->>User: Tampilkan Digital Ticket Pass & QR Code
 
     User->>TabBar: Pindah ke Tab Profile
-    TabBar->>ProfileView: Render UserProfileView (SwiftUI)
+    TabBar->>ProfileView: Render UserProfileScreen (SwiftUI)
     ProfileView->>CoreData: Ambil Total Tiket & Favorit
     ProfileView-->>User: Tampilkan Statistik & Riwayat Tiket
 ```

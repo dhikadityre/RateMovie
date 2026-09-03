@@ -1,5 +1,5 @@
 //
-//  InteractiveRatingWidgetViewModel.swift
+//  InteractiveRatingWidgetViewModelSUI.swift
 //  RateMovie
 //
 //  Created by DHIKA ADITYA ARE on 03/09/26.
@@ -8,7 +8,7 @@
 import Foundation
 import Combine
 
-public final class InteractiveRatingWidgetViewModel: ObservableObject {
+public final class InteractiveRatingWidgetViewModelSUI: ObservableObject {
     @Published public var currentRating: Int
     @Published public var isSubmitted: Bool
     

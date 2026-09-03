@@ -1,5 +1,5 @@
 //
-//  SeatBookingView.swift
+//  SeatBookingScreen.swift
 //  RateMovie
 //
 //  Created by DHIKA ADITYA ARE on 03/09/26.
@@ -7,10 +7,10 @@
 
 import SwiftUI
 
-public struct SeatBookingView: View {
-    @ObservedObject public var viewModel: SeatBookingViewModel
+public struct SeatBookingScreen: View {
+    @ObservedObject public var viewModel: SeatBookingScreenViewModel
     
-    public init(viewModel: SeatBookingViewModel) {
+    public init(viewModel: SeatBookingScreenViewModel) {
         self.viewModel = viewModel
     }
     
@@ -48,7 +48,7 @@ public struct SeatBookingView: View {
 }
 
 // MARK: - Header Info Section
-extension SeatBookingView {
+extension SeatBookingScreen {
     private func renderHeaderInfo() -> some View {
         VStack(spacing: 6) {
             Text(viewModel.movieTitle)
@@ -71,7 +71,7 @@ extension SeatBookingView {
 }
 
 // MARK: - Date Picker Section
-extension SeatBookingView {
+extension SeatBookingScreen {
     private func renderDateCard(_ date: BookingDate) -> some View {
         let isSelected = date.id == viewModel.selectedDate.id
         return Button(action: {
@@ -127,7 +127,7 @@ extension SeatBookingView {
 }
 
 // MARK: - Time Picker Section
-extension SeatBookingView {
+extension SeatBookingScreen {
     private func renderTimeChip(_ time: BookingTime) -> some View {
         let isSelected = time.id == viewModel.selectedTime.id
         return Button(action: {
@@ -177,8 +177,8 @@ extension SeatBookingView {
     }
 }
 
-// MARK: - Cinema Screen Section
-extension SeatBookingView {
+// MARK: - Cinema Screen Visual Section
+extension SeatBookingScreen {
     private func renderCinemaScreenSection() -> some View {
         VStack(spacing: 8) {
             ZStack {
@@ -235,8 +235,8 @@ struct ScreenArcShape: Shape {
     }
 }
 
-// MARK: - Seat Grid Section
-extension SeatBookingView {
+// MARK: - Seat Grid Layout Section
+extension SeatBookingScreen {
     private func renderSeatItem(_ seat: SeatModel) -> some View {
         let isSelected = viewModel.selectedSeatIDs.contains(seat.id)
         let isReserved = seat.status == .reserved
@@ -331,7 +331,7 @@ extension SeatBookingView {
 }
 
 // MARK: - Legend Section
-extension SeatBookingView {
+extension SeatBookingScreen {
     private func renderLegendItem(title: String, color: Color, strokeColor: Color? = nil, icon: String? = nil) -> some View {
         HStack(spacing: 6) {
             ZStack {
@@ -380,7 +380,7 @@ extension SeatBookingView {
 }
 
 // MARK: - Bottom Checkout Bar
-extension SeatBookingView {
+extension SeatBookingScreen {
     private func renderBottomCheckoutBar() -> some View {
         HStack {
             // Price and Seats info

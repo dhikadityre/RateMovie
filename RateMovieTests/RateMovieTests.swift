@@ -111,11 +111,11 @@ final class RateMovieTests: XCTestCase {
         waitForExpectations(timeout: 5.0, handler: nil)
     }
 
-    func testInteractiveRatingWidgetViewModel() {
+    func testInteractiveRatingWidgetViewModelSUI() {
         var changedRating: Int?
         var submittedRating: Int?
         
-        let viewModel = InteractiveRatingWidgetViewModel(
+        let viewModel = InteractiveRatingWidgetViewModelSUI(
             initialRating: 0,
             maxRating: 5,
             movieTitle: "Interstellar",
@@ -156,7 +156,7 @@ final class RateMovieTests: XCTestCase {
         
         XCTAssertNotNil(vc.ratingHostingController, "Rating hosting controller should be initialized")
         XCTAssertNotNil(vc.ratingViewModel, "Rating view model should be initialized")
-        XCTAssertTrue(vc.children.contains(where: { $0 is UIHostingController<InteractiveRatingWidgetView> }), "Hosting controller should be added as child view controller")
+        XCTAssertTrue(vc.children.contains(where: { $0 is UIHostingController<InteractiveRatingWidgetViewSUI> }), "Hosting controller should be added as child view controller")
         if let stackView = vc.contentStackView, let hostingView = vc.ratingHostingController?.view {
             XCTAssertTrue(stackView.arrangedSubviews.contains(hostingView), "Hosting controller view should be an arranged subview in contentStackView")
         }
@@ -195,10 +195,10 @@ final class RateMovieTests: XCTestCase {
         XCTAssertNotNil(ticketModel.ticketId)
     }
 
-    func testSeatBookingViewModelFlow() {
+    func testSeatBookingScreenViewModelFlow() {
         var confirmedSummary: SeatBookingSummary?
         
-        let viewModel = SeatBookingViewModel(
+        let viewModel = SeatBookingScreenViewModel(
             movieId: 550,
             movieTitle: "Fight Club",
             cinemaHall: "Hall 2 - Dolby Atmos",
@@ -264,8 +264,8 @@ final class RateMovieTests: XCTestCase {
         vc.didTapBookTicket()
         
         XCTAssertEqual(nav.viewControllers.count, 2, "Navigation stack should contain 2 view controllers after booking tap")
-        guard let hostingVC = nav.viewControllers.last as? UIHostingController<SeatBookingView> else {
-            XCTFail("Pushed view controller should be UIHostingController<SeatBookingView>")
+        guard let hostingVC = nav.viewControllers.last as? UIHostingController<SeatBookingScreen> else {
+            XCTFail("Pushed view controller should be UIHostingController<SeatBookingScreen>")
             return
         }
         XCTAssertTrue(hostingVC.hidesBottomBarWhenPushed)
@@ -530,11 +530,11 @@ final class RateMovieTests: XCTestCase {
         XCTAssertEqual(zeroModel.formattedWatchHours, "0 hrs")
     }
 
-    func testUserProfileViewModel() {
+    func testUserProfileScreenViewModel() {
         var didCallFavorites = false
         var didCallTickets = false
         
-        let viewModel = UserProfileViewModel(
+        let viewModel = UserProfileScreenViewModel(
             onNavigateToFavorites: {
                 didCallFavorites = true
             },
@@ -573,8 +573,8 @@ final class RateMovieTests: XCTestCase {
         }
         
         let profileNav = navControllers[1]
-        guard let profileHosting = profileNav.viewControllers.first as? UIHostingController<UserProfileView> else {
-            XCTFail("Tab 2 root should be UIHostingController<UserProfileView>")
+        guard let profileHosting = profileNav.viewControllers.first as? UIHostingController<UserProfileScreen> else {
+            XCTFail("Tab 2 root should be UIHostingController<UserProfileScreen>")
             return
         }
         

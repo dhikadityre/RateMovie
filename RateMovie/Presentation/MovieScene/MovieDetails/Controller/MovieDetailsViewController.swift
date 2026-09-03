@@ -21,8 +21,8 @@ class MovieDetailsViewController: UIViewController {
     @IBOutlet weak var similarView: MovieDetailSimilarView!
     
     // MARK: - SwiftUI Embedded Component
-    private(set) var ratingHostingController: UIHostingController<InteractiveRatingWidgetView>?
-    private(set) var ratingViewModel = InteractiveRatingWidgetViewModel()
+    private(set) var ratingHostingController: UIHostingController<InteractiveRatingWidgetViewSUI>?
+    private(set) var ratingViewModel = InteractiveRatingWidgetViewModelSUI()
     
     // MARK: - Booking UI Components
     private(set) var bottomBookingBar: UIView = {
@@ -102,7 +102,7 @@ extension MovieDetailsViewController {
     private func setupRatingWidget() {
         guard let contentStackView = contentStackView else { return }
         
-        let ratingVM = InteractiveRatingWidgetViewModel(
+        let ratingVM = InteractiveRatingWidgetViewModelSUI(
             movieTitle: viewModel?.title,
             onRatingSubmitted: { [weak self] _ in
                 self?.snakeBarGreen(message: "Thank you for rating!")
@@ -110,7 +110,7 @@ extension MovieDetailsViewController {
         )
         self.ratingViewModel = ratingVM
         
-        let hostingController = UIHostingController(rootView: InteractiveRatingWidgetView(viewModel: ratingVM))
+        let hostingController = UIHostingController(rootView: InteractiveRatingWidgetViewSUI(viewModel: ratingVM))
         hostingController.view.backgroundColor = .clear
         
         addChild(hostingController)
@@ -274,14 +274,14 @@ extension MovieDetailsViewController {
         let movieId = viewModel?.getMovieId()
         let movieTitle = viewModel?.title ?? "Movie Details"
         
-        let bookingVM = SeatBookingViewModel(
+        let bookingVM = SeatBookingScreenViewModel(
             movieId: movieId,
             movieTitle: movieTitle,
             onConfirmBooking: { [weak self] summary in
                 self?.handleBookingConfirmation(summary: summary)
             }
         )
-        let bookingView = SeatBookingView(viewModel: bookingVM)
+        let bookingView = SeatBookingScreen(viewModel: bookingVM)
         let hostingController = UIHostingController(rootView: bookingView)
         hostingController.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(hostingController, animated: true)

@@ -1,5 +1,5 @@
 //
-//  InteractiveRatingWidgetView.swift
+//  InteractiveRatingWidgetViewSUI.swift
 //  RateMovie
 //
 //  Created by DHIKA ADITYA ARE on 03/09/26.
@@ -7,10 +7,10 @@
 
 import SwiftUI
 
-public struct InteractiveRatingWidgetView: View {
-    @ObservedObject public var viewModel: InteractiveRatingWidgetViewModel
+public struct InteractiveRatingWidgetViewSUI: View {
+    @ObservedObject public var viewModel: InteractiveRatingWidgetViewModelSUI
 
-    public init(viewModel: InteractiveRatingWidgetViewModel) {
+    public init(viewModel: InteractiveRatingWidgetViewModelSUI) {
         self.viewModel = viewModel
     }
     
@@ -22,7 +22,7 @@ public struct InteractiveRatingWidgetView: View {
 }
 
 // MARK: - Main Content & Container
-extension InteractiveRatingWidgetView {
+extension InteractiveRatingWidgetViewSUI {
     private func renderCardContainer() -> some View {
         VStack(alignment: .center, spacing: 14) {
             renderHeaderSection()
@@ -44,7 +44,7 @@ extension InteractiveRatingWidgetView {
 }
 
 // MARK: - Header Section
-extension InteractiveRatingWidgetView {
+extension InteractiveRatingWidgetViewSUI {
     private func renderHeaderIconAndTitle() -> some View {
         HStack(spacing: 8) {
             Image(systemName: "star.bubble.fill")
@@ -82,7 +82,7 @@ extension InteractiveRatingWidgetView {
 }
 
 // MARK: - Star Rating Section
-extension InteractiveRatingWidgetView {
+extension InteractiveRatingWidgetViewSUI {
     private func renderStarItem(for index: Int) -> some View {
         let isSelected = index <= viewModel.currentRating
         return Button(action: {
@@ -109,7 +109,7 @@ extension InteractiveRatingWidgetView {
 }
 
 // MARK: - Sentiment Description
-extension InteractiveRatingWidgetView {
+extension InteractiveRatingWidgetViewSUI {
     private func renderSentimentDescription() -> some View {
         Text(viewModel.sentimentDescription)
             .font(.system(size: 13, weight: .medium))
@@ -120,7 +120,7 @@ extension InteractiveRatingWidgetView {
 }
 
 // MARK: - Action Section (Submit / Thank You)
-extension InteractiveRatingWidgetView {
+extension InteractiveRatingWidgetViewSUI {
     private func renderThankYouMessage() -> some View {
         HStack(spacing: 6) {
             Image(systemName: "checkmark.circle.fill")
