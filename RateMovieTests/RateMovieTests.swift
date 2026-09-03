@@ -163,10 +163,11 @@ final class RateMovieTests: XCTestCase {
     }
 
     func testSeatBookingModels() {
-        let seat = SeatModel(row: "B", number: 4, status: .available, price: 15.0)
+        let seat = SeatModel(row: "B", number: 4, status: .available, price: 50_000.0)
         XCTAssertEqual(seat.seatCode, "B4")
         XCTAssertEqual(seat.status, .available)
-        XCTAssertEqual(seat.price, 15.0)
+        XCTAssertEqual(seat.price, 50_000.0)
+        XCTAssertEqual(seat.priceFormatted, "Rp 50.000")
         
         let date = BookingDate(dayOfWeek: "THU", dayNumber: "04", month: "SEP", fullDateString: "04 Sep 2026")
         XCTAssertEqual(date.dayOfWeek, "THU")
@@ -183,13 +184,14 @@ final class RateMovieTests: XCTestCase {
             time: "19:30",
             seats: "B4, B5",
             selectedSeatsList: ["B4", "B5"],
-            totalPrice: 30.0,
+            totalPrice: 100_000.0,
             cinemaHall: "IMAX Laser"
         )
         let ticketModel = summary.toTicketModel()
         XCTAssertEqual(ticketModel.movieId, 101)
         XCTAssertEqual(ticketModel.movieTitle, "Dune")
         XCTAssertEqual(ticketModel.seats, "B4, B5")
+        XCTAssertEqual(summary.totalPriceFormatted, "Rp 100.000")
         XCTAssertNotNil(ticketModel.ticketId)
     }
 
@@ -200,7 +202,7 @@ final class RateMovieTests: XCTestCase {
             movieId: 550,
             movieTitle: "Fight Club",
             cinemaHall: "Hall 2 - Dolby Atmos",
-            ticketPricePerSeat: 10.0,
+            ticketPricePerSeat: 50_000.0,
             onConfirmBooking: { summary in
                 confirmedSummary = summary
             }
@@ -209,25 +211,26 @@ final class RateMovieTests: XCTestCase {
         // Initial state
         XCTAssertEqual(viewModel.movieTitle, "Fight Club")
         XCTAssertEqual(viewModel.totalPrice, 0.0)
+        XCTAssertEqual(viewModel.totalPriceFormatted, "Rp 0")
         XCTAssertFalse(viewModel.canConfirm)
         XCTAssertEqual(viewModel.selectedSeatsFormatted, "No seat selected")
         
         // Select seat B1 (available)
         viewModel.toggleSeat(row: "B", number: 1)
         XCTAssertTrue(viewModel.canConfirm)
-        XCTAssertEqual(viewModel.totalPrice, 10.0)
-        XCTAssertEqual(viewModel.totalPriceFormatted, "$10.00")
+        XCTAssertEqual(viewModel.totalPrice, 50_000.0)
+        XCTAssertEqual(viewModel.totalPriceFormatted, "Rp 50.000")
         XCTAssertTrue(viewModel.selectedSeatsFormatted.contains("B1"))
         
         // Select seat B2 (available)
         viewModel.toggleSeat(row: "B", number: 2)
-        XCTAssertEqual(viewModel.totalPrice, 20.0)
-        XCTAssertEqual(viewModel.totalPriceFormatted, "$20.00")
+        XCTAssertEqual(viewModel.totalPrice, 100_000.0)
+        XCTAssertEqual(viewModel.totalPriceFormatted, "Rp 100.000")
         
         // Attempt to select reserved seat (A3 is reserved in mock generator)
         viewModel.toggleSeat(row: "A", number: 3)
         XCTAssertFalse(viewModel.selectedSeatIDs.contains("A3"))
-        XCTAssertEqual(viewModel.totalPrice, 20.0)
+        XCTAssertEqual(viewModel.totalPrice, 100_000.0)
         
         // Change date and time
         let newDate = BookingDate(dayOfWeek: "FRI", dayNumber: "05", month: "SEP", fullDateString: "05 Sep 2026")
@@ -242,9 +245,32 @@ final class RateMovieTests: XCTestCase {
         XCTAssertNotNil(confirmedSummary)
         XCTAssertEqual(confirmedSummary?.movieTitle, "Fight Club")
         XCTAssertEqual(confirmedSummary?.movieId, 550)
-        XCTAssertEqual(confirmedSummary?.totalPrice, 20.0)
+        XCTAssertEqual(confirmedSummary?.totalPrice, 100_000.0)
+        XCTAssertEqual(confirmedSummary?.totalPriceFormatted, "Rp 100.000")
         XCTAssertEqual(confirmedSummary?.selectedSeatsList, ["B1", "B2"])
     }
+    
+    func testMovieDetailsViewControllerBookTicketNavigation() {
+        let vc = MovieDetailsViewController()
+        vc.loadViewIfNeeded()
+        
+        XCTAssertNotNil(vc.bookTicketButton, "Book ticket button should be initialized")
+        XCTAssertNotNil(vc.bottomBookingBar, "Bottom booking bar should be initialized")
+        XCTAssertEqual(vc.bookTicketButton.title(for: .normal), "Book Ticket")
+        XCTAssertTrue(vc.view.subviews.contains(vc.bottomBookingBar), "Bottom booking bar should be added to view hierarchy")
+        XCTAssertTrue(vc.bottomBookingBar.subviews.contains(vc.bookTicketButton), "Book ticket button should be inside bottom booking bar")
+        
+        let nav = UINavigationController(rootViewController: vc)
+        vc.didTapBookTicket()
+        
+        XCTAssertEqual(nav.viewControllers.count, 2, "Navigation stack should contain 2 view controllers after booking tap")
+        guard let hostingVC = nav.viewControllers.last as? UIHostingController<SeatBookingView> else {
+            XCTFail("Pushed view controller should be UIHostingController<SeatBookingView>")
+            return
+        }
+        XCTAssertTrue(hostingVC.hidesBottomBarWhenPushed)
+    }
 }
+
 
 

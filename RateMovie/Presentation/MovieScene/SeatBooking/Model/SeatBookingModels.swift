@@ -7,6 +7,27 @@
 
 import Foundation
 
+// MARK: - Currency Formatter Extension
+extension Double {
+    public var toRupiah: String {
+        let formatter = NumberFormatter()
+        formatter.locale = Locale(identifier: "id_ID")
+        formatter.numberStyle = .decimal
+        formatter.usesGroupingSeparator = true
+        formatter.groupingSeparator = "."
+        formatter.decimalSeparator = ","
+        formatter.maximumFractionDigits = 0
+        let formattedNumber = formatter.string(from: NSNumber(value: self)) ?? "\(Int(self))"
+        return "Rp \(formattedNumber)"
+    }
+}
+
+extension Int {
+    public var toRupiah: String {
+        Double(self).toRupiah
+    }
+}
+
 public enum SeatStatus: String, Codable {
     case available
     case reserved
@@ -25,13 +46,17 @@ public struct SeatModel: Identifiable, Equatable {
         row: String,
         number: Int,
         status: SeatStatus = .available,
-        price: Double = 12.50
+        price: Double = 50_000.0
     ) {
         self.row = row
         self.number = number
         self.id = id ?? "\(row)\(number)"
         self.status = status
         self.price = price
+    }
+    
+    public var priceFormatted: String {
+        price.toRupiah
     }
     
     public var seatCode: String {
@@ -114,6 +139,10 @@ public struct SeatBookingSummary: Equatable {
         self.totalPrice = totalPrice
         self.cinemaHall = cinemaHall
         self.qrCodeString = qrCodeString ?? "TICKET-\(ticketId.prefix(8).uppercased())"
+    }
+    
+    public var totalPriceFormatted: String {
+        totalPrice.toRupiah
     }
     
     public func toTicketModel() -> TicketModel {

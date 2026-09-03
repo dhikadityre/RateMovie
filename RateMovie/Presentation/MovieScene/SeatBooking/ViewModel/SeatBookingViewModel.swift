@@ -28,7 +28,7 @@ public final class SeatBookingViewModel: ObservableObject {
         movieId: Int? = nil,
         movieTitle: String = "Movie Title",
         cinemaHall: String = "Hall 1 - Dolby Atmos",
-        ticketPricePerSeat: Double = 12.50,
+        ticketPricePerSeat: Double = 50_000.0,
         dates: [BookingDate]? = nil,
         times: [BookingTime]? = nil,
         initialSelectedSeatIDs: Set<String> = [],
@@ -68,7 +68,7 @@ public final class SeatBookingViewModel: ObservableObject {
     }
     
     public var totalPriceFormatted: String {
-        String(format: "$%.2f", totalPrice)
+        totalPrice.toRupiah
     }
     
     public var canConfirm: Bool {
@@ -171,7 +171,7 @@ public final class SeatBookingViewModel: ObservableObject {
                 } else if initialSelected.contains(seatId) {
                     status = .selected
                 }
-                return SeatModel(id: seatId, row: row, number: number, status: status, price: 12.50)
+                return SeatModel(id: seatId, row: row, number: number, status: status, price: 50_000.0)
             }
         }
     }
