@@ -109,5 +109,45 @@ final class RateMovieTests: XCTestCase {
         
         waitForExpectations(timeout: 5.0, handler: nil)
     }
+
+    func testInteractiveRatingWidgetViewModel() {
+        var changedRating: Int?
+        var submittedRating: Int?
+        
+        let viewModel = InteractiveRatingWidgetViewModel(
+            initialRating: 0,
+            maxRating: 5,
+            movieTitle: "Interstellar",
+            onRatingChanged: { rating in
+                changedRating = rating
+            },
+            onRatingSubmitted: { rating in
+                submittedRating = rating
+            }
+        )
+        
+        XCTAssertFalse(viewModel.hasRating)
+        XCTAssertFalse(viewModel.isSubmitted)
+        XCTAssertEqual(viewModel.sentimentDescription, "Tap a star to share your rating")
+        
+        // Select Rating
+        viewModel.selectRating(4)
+        XCTAssertTrue(viewModel.hasRating)
+        XCTAssertEqual(viewModel.currentRating, 4)
+        XCTAssertEqual(changedRating, 4)
+        XCTAssertEqual(viewModel.ratingScoreFormatted, "4/5")
+        XCTAssertEqual(viewModel.sentimentDescription, "Good! 🍿")
+        
+        // Submit Rating
+        viewModel.submitRating()
+        XCTAssertTrue(viewModel.isSubmitted)
+        XCTAssertEqual(submittedRating, 4)
+        
+        // Reset
+        viewModel.reset()
+        XCTAssertFalse(viewModel.hasRating)
+        XCTAssertFalse(viewModel.isSubmitted)
+    }
 }
+
 

@@ -67,6 +67,8 @@
 		A020001228EEF32900000012 /* MovieDetailSimilarView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A010001228EEF32900000012 /* MovieDetailSimilarView.xib */; };
 		B020000128EEF32900000001 /* TicketModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B010000128EEF32900000001 /* TicketModel.swift */; };
 		B020000228EEF32900000002 /* TicketPersistenceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B010000228EEF32900000002 /* TicketPersistenceManager.swift */; };
+		B020000328EEF32900000003 /* InteractiveRatingWidgetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B010000328EEF32900000003 /* InteractiveRatingWidgetView.swift */; };
+		B020000428EEF32900000004 /* InteractiveRatingWidgetViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B010000428EEF32900000004 /* InteractiveRatingWidgetViewModel.swift */; };
 		C72431CF2BA6C1400E56073E /* Pods_RateMovie.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED9E2DAA9FE3B657E2ECFB8A /* Pods_RateMovie.framework */; };
 		E622D28E2A758ED200A05ACD /* Endpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = E622D28D2A758ED200A05ACD /* Endpoint.swift */; };
 		E622D2902A75933A00A05ACD /* UICollectionView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E622D28F2A75933A00A05ACD /* UICollectionView+Extensions.swift */; };
@@ -170,6 +172,8 @@
 		A9052B762144C4F4E45F3331 /* Pods_RateMovie_RateMovieUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RateMovie_RateMovieUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B010000128EEF32900000001 /* TicketModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketModel.swift; sourceTree = "<group>"; };
 		B010000228EEF32900000002 /* TicketPersistenceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketPersistenceManager.swift; sourceTree = "<group>"; };
+		B010000328EEF32900000003 /* InteractiveRatingWidgetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractiveRatingWidgetView.swift; sourceTree = "<group>"; };
+		B010000428EEF32900000004 /* InteractiveRatingWidgetViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractiveRatingWidgetViewModel.swift; sourceTree = "<group>"; };
 		E5A9389B7E8575041001DC5E /* Pods-RateMovie.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RateMovie.debug.xcconfig"; path = "Target Support Files/Pods-RateMovie/Pods-RateMovie.debug.xcconfig"; sourceTree = "<group>"; };
 		E622D28D2A758ED200A05ACD /* Endpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Endpoint.swift; sourceTree = "<group>"; };
 		E622D28F2A75933A00A05ACD /* UICollectionView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UICollectionView+Extensions.swift"; sourceTree = "<group>"; };
@@ -562,6 +566,7 @@
 				A030000428EEF32900000004 /* Genres */,
 				A030000528EEF32900000005 /* Storyline */,
 				A030000628EEF32900000006 /* Similar */,
+				A030000728EEF32900000007 /* Rating */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -624,6 +629,15 @@
 				A010001228EEF32900000012 /* MovieDetailSimilarView.xib */,
 			);
 			path = Similar;
+			sourceTree = "<group>";
+		};
+		A030000728EEF32900000007 /* Rating */ = {
+			isa = PBXGroup;
+			children = (
+				B010000428EEF32900000004 /* InteractiveRatingWidgetViewModel.swift */,
+				B010000328EEF32900000003 /* InteractiveRatingWidgetView.swift */,
+			);
+			path = Rating;
 			sourceTree = "<group>";
 		};
 		AAEDC7522C9E207E19CCC421 /* Frameworks */ = {
@@ -1025,6 +1039,8 @@
 				A020001128EEF32900000011 /* MovieDetailSimilarView.swift in Sources */,
 				B020000128EEF32900000001 /* TicketModel.swift in Sources */,
 				B020000228EEF32900000002 /* TicketPersistenceManager.swift in Sources */,
+				B020000328EEF32900000003 /* InteractiveRatingWidgetView.swift in Sources */,
+				B020000428EEF32900000004 /* InteractiveRatingWidgetViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
