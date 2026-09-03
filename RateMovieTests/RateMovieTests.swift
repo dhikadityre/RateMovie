@@ -505,6 +505,62 @@ final class RateMovieTests: XCTestCase {
         
         waitForExpectations(timeout: 5.0, handler: nil)
     }
+
+    func testUserProfileModel() {
+        let model = UserProfileModel(
+            name: "Dhika Aditya",
+            email: "dhika@ratemovie.io",
+            memberTier: "VIP Cinephile",
+            joinDate: "Member since 2022",
+            totalWatchHours: 12.5,
+            totalFavoritesCount: 8,
+            totalTicketsCount: 4,
+            totalReviewsCount: 3
+        )
+        
+        XCTAssertEqual(model.name, "Dhika Aditya")
+        XCTAssertEqual(model.email, "dhika@ratemovie.io")
+        XCTAssertEqual(model.memberTier, "VIP Cinephile")
+        XCTAssertEqual(model.formattedWatchHours, "12.5 hrs")
+        XCTAssertEqual(model.formattedFavorites, "8")
+        XCTAssertEqual(model.formattedTickets, "4")
+        XCTAssertEqual(model.formattedReviews, "3")
+        
+        let zeroModel = UserProfileModel(totalWatchHours: 0.0)
+        XCTAssertEqual(zeroModel.formattedWatchHours, "0 hrs")
+    }
+
+    func testUserProfileViewModel() {
+        var didCallFavorites = false
+        var didCallTickets = false
+        
+        let viewModel = UserProfileViewModel(
+            onNavigateToFavorites: {
+                didCallFavorites = true
+            },
+            onNavigateToTickets: {
+                didCallTickets = true
+            }
+        )
+        
+        viewModel.didTapFavorites()
+        XCTAssertTrue(didCallFavorites)
+        
+        viewModel.didTapTickets()
+        XCTAssertTrue(didCallTickets)
+        
+        let expectation = expectation(description: "Fetch user profile data from Core Data")
+        viewModel.fetchUserProfileData()
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            XCTAssertFalse(viewModel.isLoading)
+            XCTAssertGreaterThanOrEqual(viewModel.profile.totalFavoritesCount, 0)
+            XCTAssertGreaterThanOrEqual(viewModel.profile.totalTicketsCount, 0)
+            expectation.fulfill()
+        }
+        
+        waitForExpectations(timeout: 3.0, handler: nil)
+    }
 }
 
 
