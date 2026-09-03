@@ -34,12 +34,10 @@ extension DefaultMovieFavouritesViewModel {
     func getListFavorite() {
         useCaseFavorite.getListFavorite { [weak self] data in
             self?.movieFavouriteList.value = data
-            print("ini favnya: \(data)")
         }
     }
     
     func deleteFavorite(with id: Int) {
-        print("ini movie yg dihapus id: \(id)")
         DispatchQueue.main.async {
             self.useCaseFavorite.deleteFavorite(with: id)
         }

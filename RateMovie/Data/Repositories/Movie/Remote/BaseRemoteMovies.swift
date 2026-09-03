@@ -26,7 +26,6 @@ struct DefaultBaseRemoteMovies: BaseRemoteMovies {
       switch data.result {
       case .success(let data):
         if let result = data.results {
-          print(result)
           completion(result)
         }
       case .failure:

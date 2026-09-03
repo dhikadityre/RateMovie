@@ -77,20 +77,18 @@ extension UIViewController {
         var newPhoneNumb: String = ""
         if String(currNumber.prefix(2)) == "62"{
             let tempPhoneNumb = String(currNumber.suffix(currNumber.count - 2))
-            print("ini no telp: \(tempPhoneNumb)")
             newPhoneNumb = "+62\(tempPhoneNumb)"
             return (newPhoneNumb, true)
             
-        }else if String(currNumber.prefix(2)) == "08"{
+        } else if String(currNumber.prefix(2)) == "08"{
             let tempPhoneNumb = String(currNumber.suffix(currNumber.count - 2))
-            print("ini no telp: \(tempPhoneNumb)")
             newPhoneNumb = "+628\(tempPhoneNumb)"
             return (newPhoneNumb, true)
             
-        }else if String(currNumber.prefix(3)) == "+62"{
+        } else if String(currNumber.prefix(3)) == "+62"{
             newPhoneNumb = currNumber
             return (newPhoneNumb, true)
-        }else{
+        } else{
            return (currNumber, false)
         }
     }
