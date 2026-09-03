@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21225" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_0" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21207"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="MovieDetailHeaderView" customModule="RateMovie" customModuleProvider="target">
+            <connections>
+                <outlet property="gradientOverlayView" destination="vw-grad-overlay" id="out-grad"/>
+                <outlet property="headerImageView" destination="img-header" id="out-header"/>
+                <outlet property="view" destination="iN0-l3-epB" id="out-view"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB">
+            <rect key="frame" x="0.0" y="0.0" width="390" height="250"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="img-header">
+                    <rect key="frame" x="0.0" y="0.0" width="390" height="250"/>
+                    <color key="backgroundColor" red="0.1019607843" green="0.1058823529" blue="0.1333333333" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                </imageView>
+                <view userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vw-grad-overlay">
+                    <rect key="frame" x="0.0" y="0.0" width="390" height="250"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                </view>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <constraints>
+                <constraint firstItem="img-header" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="hdr-l"/>
+                <constraint firstAttribute="trailing" secondItem="img-header" secondAttribute="trailing" id="hdr-r"/>
+                <constraint firstItem="img-header" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="hdr-t"/>
+                <constraint firstAttribute="bottom" secondItem="img-header" secondAttribute="bottom" id="hdr-b"/>
+                <constraint firstItem="vw-grad-overlay" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="grd-l"/>
+                <constraint firstAttribute="trailing" secondItem="vw-grad-overlay" secondAttribute="trailing" id="grd-r"/>
+                <constraint firstItem="vw-grad-overlay" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="grd-t"/>
+                <constraint firstAttribute="bottom" secondItem="vw-grad-overlay" secondAttribute="bottom" id="grd-b"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <point key="canvasLocation" x="139" y="20"/>
+        </view>
+    </objects>
+</document>

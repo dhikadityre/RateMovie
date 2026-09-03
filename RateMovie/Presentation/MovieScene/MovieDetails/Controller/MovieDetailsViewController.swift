@@ -6,51 +6,23 @@
 //
 
 import UIKit
-import Kingfisher
 
 class MovieDetailsViewController: UIViewController {
     
-    // MARK: - IBOutlets (Setup via Auto Layout in XIB)
+    // MARK: - IBOutlets (Modular Custom Views)
     @IBOutlet weak var scrollView: UIScrollView!
-    @IBOutlet weak var headerImageView: UIImageView!
-    @IBOutlet weak var gradientOverlayView: UIView!
-    @IBOutlet weak var posterContainerView: UIView!
-    @IBOutlet weak var contentImageView: UIImageView!
-    @IBOutlet weak var titleMovieLabel: UILabel!
-    @IBOutlet weak var taglineLabel: UILabel!
-    @IBOutlet weak var ratingBadgeView: UIView!
-    @IBOutlet weak var ratingLabel: UILabel!
-    @IBOutlet weak var voteCountLabel: UILabel!
-    @IBOutlet weak var yearBadgeView: UIView!
-    @IBOutlet weak var yearLabel: UILabel!
-    @IBOutlet weak var durationBadgeView: UIView!
-    @IBOutlet weak var durationLabel: UILabel!
-    @IBOutlet weak var languageBadgeView: UIView!
-    @IBOutlet weak var languageLabel: UILabel!
-    @IBOutlet weak var genreScrollView: UIScrollView!
-    @IBOutlet weak var genreStackView: UIStackView!
-    @IBOutlet weak var storylineTitleLabel: UILabel!
-    @IBOutlet weak var overviewDescriptionLabel: UILabel!
-    @IBOutlet weak var readMoreButton: UIButton!
-    @IBOutlet weak var similarTitleLabel: UILabel!
-    @IBOutlet weak var recommendationCollectionView: UICollectionView!
-    @IBOutlet weak var recommendationCollectionViewHeight: NSLayoutConstraint!
-    @IBOutlet weak var emptyRecommendationsLabel: UILabel!
-    @IBOutlet weak var floatingNavBar: UIView!
-    @IBOutlet weak var navBlurView: UIVisualEffectView!
-    @IBOutlet weak var backButton: UIButton!
-    @IBOutlet weak var navTitleLabel: UILabel!
-    @IBOutlet weak var shareButton: UIButton!
-    @IBOutlet weak var favoriteButton: UIButton!
+    @IBOutlet weak var navBarView: MovieDetailNavBarView!
+    @IBOutlet weak var headerView: MovieDetailHeaderView!
+    @IBOutlet weak var infoView: MovieDetailInfoView!
+    @IBOutlet weak var genresView: MovieDetailGenresView!
+    @IBOutlet weak var storylineView: MovieDetailStorylineView!
+    @IBOutlet weak var similarView: MovieDetailSimilarView!
     
     // MARK: - ViewModel
     var viewModel: MovieDetailsViewModel?
     
-    // MARK: - UI State & Layers
-    private let gradientLayer = CAGradientLayer()
-    private var isOverviewExpanded = false
+    // MARK: - Appearance Properties
     private let darkBackground = UIColor(red: 16/255, green: 17/255, blue: 21/255, alpha: 1.0)
-    private let goldRatingColor = UIColor(red: 245/255, green: 197/255, blue: 24/255, alpha: 1.0)
 }
 
 // MARK: - Lifecycle
@@ -67,19 +39,9 @@ extension MovieDetailsViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
-        setupActions()
-        configureCollectionView()
+        setupCallbacks()
         bind()
         viewModel?.didLoad()
-    }
-    
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        gradientLayer.frame = gradientOverlayView.bounds
-        posterContainerView.layer.shadowPath = UIBezierPath(
-            roundedRect: posterContainerView.bounds,
-            cornerRadius: 14
-        ).cgPath
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -88,296 +50,124 @@ extension MovieDetailsViewController {
     }
 }
 
-// MARK: - UI Styling & Initial Configuration
+// MARK: - UI & Callbacks Setup
 extension MovieDetailsViewController {
-    
     private func setupUI() {
-        // Base View Styling
         view.backgroundColor = darkBackground
         scrollView.delegate = self
-        
-        // Header Image & Multi-stop Gradient Overlay
-        headerImageView.backgroundColor = UIColor(red: 26/255, green: 27/255, blue: 34/255, alpha: 1.0)
-        gradientLayer.colors = [
-            UIColor.clear.cgColor,
-            UIColor.clear.cgColor,
-            darkBackground.withAlphaComponent(0.7).cgColor,
-            darkBackground.cgColor
-        ]
-        gradientLayer.locations = [0.0, 0.40, 0.78, 1.0]
-        gradientOverlayView.layer.addSublayer(gradientLayer)
-        
-        // Poster Styling & Ambient Depth
-        contentImageView.layer.cornerRadius = 14
-        contentImageView.layer.borderWidth = 0.8
-        contentImageView.layer.borderColor = UIColor.white.withAlphaComponent(0.18).cgColor
-        
-        posterContainerView.layer.shadowColor = UIColor.black.cgColor
-        posterContainerView.layer.shadowOpacity = 0.55
-        posterContainerView.layer.shadowOffset = CGSize(width: 0, height: 8)
-        posterContainerView.layer.shadowRadius = 14
-        
-        // Metadata Badge Badges Styling
-        ratingBadgeView.layer.cornerRadius = 8
-        ratingBadgeView.layer.borderWidth = 0.5
-        ratingBadgeView.layer.borderColor = goldRatingColor.withAlphaComponent(0.4).cgColor
-        
-        [yearBadgeView, durationBadgeView, languageBadgeView].forEach { badge in
-            badge?.layer.cornerRadius = 8
-            badge?.layer.borderWidth = 0.5
-            badge?.layer.borderColor = UIColor.white.withAlphaComponent(0.12).cgColor
+        updateComponents()
+    }
+    
+    private func setupCallbacks() {
+        navBarView.onBackTapped = { [weak self] in
+            self?.navigationController?.popViewController(animated: true)
         }
         
-        // Floating Nav Bar Button Styling
-        styleCircleButton(backButton, systemName: "chevron.left")
-        styleCircleButton(shareButton, systemName: "square.and.arrow.up")
-        styleCircleButton(favoriteButton, systemName: "bookmark")
-        
-        // Populate initial data from ViewModel
-        populateInitialData()
-    }
-    
-    private func styleCircleButton(_ button: UIButton, systemName: String) {
-        button.layer.cornerRadius = 20
-        button.clipsToBounds = true
-        button.backgroundColor = UIColor.black.withAlphaComponent(0.35)
-        button.layer.borderWidth = 0.5
-        button.layer.borderColor = UIColor.white.withAlphaComponent(0.25).cgColor
-        
-        let config = UIImage.SymbolConfiguration(pointSize: 15, weight: .semibold)
-        let image = UIImage(systemName: systemName, withConfiguration: config)
-        button.setImage(image, for: .normal)
-        button.tintColor = .white
-    }
-    
-    private func setupActions() {
-        backButton.addTarget(self, action: #selector(didTapBack), for: .touchUpInside)
-        shareButton.addTarget(self, action: #selector(didTapShare), for: .touchUpInside)
-        favoriteButton.addTarget(self, action: #selector(didTapFavorite), for: .touchUpInside)
-        readMoreButton.addTarget(self, action: #selector(toggleOverviewExpanded), for: .touchUpInside)
-    }
-    
-    private func configureCollectionView() {
-        recommendationCollectionView.delegate = self
-        recommendationCollectionView.dataSource = self
-        recommendationCollectionView.register(
-            MovieItemCollectionViewCell.nib(),
-            forCellWithReuseIdentifier: MovieItemCollectionViewCell.identifier
-        )
-    }
-    
-    private func populateInitialData() {
-        guard let vm = viewModel else { return }
-        
-        titleMovieLabel.text = vm.title
-        navTitleLabel.text = vm.title
-        
-        if let backdrop = vm.backdropURL {
-            headerImageView.kf.indicatorType = .activity
-            headerImageView.kf.setImage(
-                with: backdrop,
-                placeholder: nil,
-                options: [.transition(.fade(0.3))]
-            )
+        navBarView.onShareTapped = { [weak self] in
+            self?.handleShare()
         }
         
-        if let poster = vm.posterURL {
-            contentImageView.kf.indicatorType = .activity
-            contentImageView.kf.setImage(
-                with: poster,
-                placeholder: nil,
-                options: [.transition(.fade(0.3))]
-            )
+        navBarView.onFavoriteTapped = { [weak self] in
+            self?.viewModel?.toggleFavorite()
         }
         
-        setOverviewText(vm.overview)
-        updateMetadata()
+        storylineView.onToggleExpand = { [weak self] in
+            UIView.animate(withDuration: 0.25) {
+                self?.view.layoutIfNeeded()
+            }
+        }
+        
+        similarView.onSelectMovie = { [weak self] movie in
+            self?.navigateToDetail(for: movie)
+        }
     }
     
     private func bind() {
         // Observe Full Movie Details
         viewModel?.movieDetail.observe(on: self) { [weak self] _ in
-            guard let self = self, let vm = self.viewModel else { return }
-            self.titleMovieLabel.text = vm.title
-            self.navTitleLabel.text = vm.title
-            
-            if let tagline = vm.taglineFormatted {
-                self.taglineLabel.text = tagline
-                self.taglineLabel.isHidden = false
-            } else {
-                self.taglineLabel.isHidden = true
-            }
-            
-            self.setOverviewText(vm.overview)
-            self.updateMetadata()
-            self.updateGenres(genres: vm.genresFormatted)
+            self?.updateComponents()
         }
         
         // Observe Similar Movies
         viewModel?.movieSimilar.observe(on: self) { [weak self] similar in
-            guard let self = self else { return }
-            self.recommendationCollectionView.reloadData()
-            self.emptyRecommendationsLabel.isHidden = !similar.isEmpty
+            self?.similarView.setView(with: MovieDetailSimilarViewModel(movies: similar))
         }
         
         // Observe Favorite Status
         viewModel?.isFavorite.observe(on: self) { [weak self] isFav in
-            self?.updateFavoriteButton(isFavorite: isFav, animated: true)
+            self?.navBarView.updateFavorite(isFavorite: isFav, animated: true)
         }
     }
-}
-
-// MARK: - Data Binding & Component Updates
-extension MovieDetailsViewController {
     
-    private func setOverviewText(_ text: String) {
-        let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineSpacing = 4
+    private func updateComponents() {
+        guard let vm = viewModel else { return }
         
-        let attributed = NSAttributedString(
-            string: text,
-            attributes: [
-                .paragraphStyle: paragraphStyle,
-                .font: UIFont.systemFont(ofSize: 14, weight: .regular),
-                .foregroundColor: UIColor(red: 209/255, green: 213/255, blue: 219/255, alpha: 1.0)
-            ]
+        headerView.setView(with: MovieDetailHeaderViewModel(backdropURL: vm.backdropURL))
+        navBarView.setView(with: MovieDetailNavBarViewModel(title: vm.title, isFavorite: vm.isFavorite.value))
+        
+        infoView.setView(
+            with: MovieDetailInfoViewModel(
+                posterURL: vm.posterURL,
+                title: vm.title,
+                tagline: vm.taglineFormatted,
+                rating: vm.ratingFormatted,
+                voteCount: vm.voteCountFormatted,
+                releaseYear: vm.releaseYearFormatted,
+                runtime: vm.runtimeFormatted,
+                language: vm.languageFormatted
+            )
         )
-        overviewDescriptionLabel.attributedText = attributed
-        readMoreButton.isHidden = text.count < 140
-    }
-    
-    @objc private func toggleOverviewExpanded() {
-        isOverviewExpanded.toggle()
-        overviewDescriptionLabel.numberOfLines = isOverviewExpanded ? 0 : 4
-        readMoreButton.setTitle(isOverviewExpanded ? "Read Less" : "Read More", for: .normal)
         
-        UIView.animate(withDuration: 0.25) {
-            self.view.layoutIfNeeded()
-        }
-    }
-    
-    private func updateMetadata() {
-        guard let vm = viewModel else { return }
-        
-        // Rating & Vote Count
-        ratingLabel.text = vm.ratingFormatted
-        if let voteCount = vm.voteCountFormatted {
-            voteCountLabel.text = voteCount
-            voteCountLabel.isHidden = false
-        } else {
-            voteCountLabel.isHidden = true
-        }
-        
-        // Release Year
-        if let year = vm.releaseYearFormatted {
-            yearLabel.text = year
-            yearBadgeView.isHidden = false
-        } else {
-            yearBadgeView.isHidden = true
-        }
-        
-        // Duration / Runtime
-        if let duration = vm.runtimeFormatted {
-            durationLabel.text = duration
-            durationBadgeView.isHidden = false
-        } else {
-            durationBadgeView.isHidden = true
-        }
-        
-        // Language
-        if let lang = vm.languageFormatted {
-            languageLabel.text = lang
-            languageBadgeView.isHidden = false
-        } else {
-            languageBadgeView.isHidden = true
-        }
-    }
-    
-    private func updateGenres(genres: [String]) {
-        genreStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
-        genreScrollView.isHidden = genres.isEmpty
-        
-        for genre in genres {
-            let chip = makeGenreChip(title: genre)
-            genreStackView.addArrangedSubview(chip)
-        }
-    }
-    
-    private func makeGenreChip(title: String) -> UIView {
-        let container = UIView()
-        container.backgroundColor = UIColor(red: 35/255, green: 37/255, blue: 46/255, alpha: 0.85)
-        container.layer.cornerRadius = 12
-        container.layer.borderWidth = 0.5
-        container.layer.borderColor = UIColor.white.withAlphaComponent(0.15).cgColor
-        
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = title
-        label.textColor = .white
-        label.font = .systemFont(ofSize: 12, weight: .medium)
-        container.addSubview(label)
-        
-        NSLayoutConstraint.activate([
-            label.topAnchor.constraint(equalTo: container.topAnchor, constant: 6),
-            label.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -6),
-            label.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 12),
-            label.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -12)
-        ])
-        
-        return container
+        genresView.setView(with: MovieDetailGenresViewModel(genres: vm.genresFormatted))
+        storylineView.setView(with: MovieDetailStorylineViewModel(overview: vm.overview))
     }
 }
 
-// MARK: - Actions & Interactions
+// MARK: - Navigation & Action Handlers
 extension MovieDetailsViewController {
-    
-    @objc private func didTapBack() {
-        let generator = UIImpactFeedbackGenerator(style: .light)
-        generator.impactOccurred()
-        navigationController?.popViewController(animated: true)
-    }
-    
-    @objc private func didTapShare() {
+    private func handleShare() {
         guard let vm = viewModel else { return }
-        let generator = UIImpactFeedbackGenerator(style: .light)
-        generator.impactOccurred()
-        
         let shareText = "Check out \(vm.title) (Rating: ★ \(vm.ratingFormatted)) on RateMovie!\n\n\(vm.overview)"
         let activityVC = UIActivityViewController(activityItems: [shareText], applicationActivities: nil)
-        activityVC.popoverPresentationController?.sourceView = shareButton
+        activityVC.popoverPresentationController?.sourceView = navBarView.shareButton
         present(activityVC, animated: true)
     }
     
-    @objc private func didTapFavorite() {
-        let generator = UIImpactFeedbackGenerator(style: .medium)
-        generator.impactOccurred()
+    private func navigateToDetail(for selectedMovie: MovieIdSimilarResponse.Result) {
+        guard let movieId = selectedMovie.id else { return }
         
-        UIView.animate(withDuration: 0.12, animations: {
-            self.favoriteButton.transform = CGAffineTransform(scaleX: 1.25, y: 1.25)
-        }) { _ in
-            UIView.animate(withDuration: 0.12) {
-                self.favoriteButton.transform = .identity
-            }
-        }
+        let movieResult = FavoriteNowPlaying(
+            isFavorite: false,
+            posterPath: selectedMovie.posterPath,
+            adult: selectedMovie.adult,
+            overview: selectedMovie.overview,
+            releaseDate: selectedMovie.releaseDate,
+            genreIDS: selectedMovie.genreIDS,
+            id: selectedMovie.id,
+            originalTitle: selectedMovie.originalTitle,
+            originalLanguage: selectedMovie.originalLanguage,
+            title: selectedMovie.title,
+            backdropPath: selectedMovie.backdropPath,
+            popularity: selectedMovie.popularity,
+            voteCount: selectedMovie.voteCount,
+            video: selectedMovie.video,
+            voteAverage: selectedMovie.voteAverage
+        )
         
-        viewModel?.toggleFavorite()
-    }
-    
-    private func updateFavoriteButton(isFavorite: Bool, animated: Bool) {
-        let config = UIImage.SymbolConfiguration(pointSize: 15, weight: .semibold)
-        let imageName = isFavorite ? "bookmark.fill" : "bookmark"
-        let image = UIImage(systemName: imageName, withConfiguration: config)
-        let tintColor: UIColor = isFavorite ? .systemPink : .white
-        
-        if animated {
-            UIView.transition(with: favoriteButton, duration: 0.25, options: .transitionCrossDissolve) {
-                self.favoriteButton.setImage(image, for: .normal)
-                self.favoriteButton.tintColor = tintColor
-            }
-        } else {
-            favoriteButton.setImage(image, for: .normal)
-            favoriteButton.tintColor = tintColor
-        }
+        let detailVC = MovieDetailsViewController()
+        detailVC.hidesBottomBarWhenPushed = true
+        let vm = DefaultMovieDetailsViewModel(
+            movieId: movieId,
+            movieResult: movieResult,
+            useCase: DefaultFetchMovieSimilarUseCase(
+                repository: DefaultBaseMovieRepository(
+                    remoteData: DefaultBaseRemoteMovies(),
+                    localData: DefaultBaseLocalMovies()
+                )
+            )
+        )
+        detailVC.viewModel = vm
+        navigationController?.pushViewController(detailVC, animated: true)
     }
 }
 
@@ -387,17 +177,9 @@ extension MovieDetailsViewController: UIScrollViewDelegate {
         let offsetY = scrollView.contentOffset.y
         
         // Navbar Alpha Fade
-        let threshold: CGFloat = 160
-        let alpha = min(max(offsetY / threshold, 0), 1.0)
-        navBlurView.alpha = alpha
-        navTitleLabel.alpha = alpha
+        navBarView.setAlphaProgress(offsetY / 160.0)
         
         // Stretchy Parallax Header on Pull Down
-        if offsetY < 0 {
-            headerImageView.transform = CGAffineTransform(translationX: 0, y: offsetY / 2)
-                .scaledBy(x: 1 - offsetY / 300, y: 1 - offsetY / 300)
-        } else {
-            headerImageView.transform = .identity
-        }
+        headerView.applyParallax(offsetY: offsetY)
     }
 }

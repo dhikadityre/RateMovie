@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="24506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_0" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24504"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="MovieDetailInfoView" customModule="RateMovie" customModuleProvider="target">
+            <connections>
+                <outlet property="durationBadgeView" destination="vw-dur-badge" id="out-dur-vw"/>
+                <outlet property="durationLabel" destination="lbl-dur" id="out-dur-lbl"/>
+                <outlet property="languageBadgeView" destination="vw-lang-badge" id="out-lang-vw"/>
+                <outlet property="languageLabel" destination="lbl-lang" id="out-lang-lbl"/>
+                <outlet property="posterContainerView" destination="vw-poster-container" id="out-poster-cnt"/>
+                <outlet property="posterImageView" destination="img-poster" id="out-poster-img"/>
+                <outlet property="ratingBadgeView" destination="vw-rate-badge" id="out-rate-vw"/>
+                <outlet property="ratingLabel" destination="lbl-rate-val" id="out-rate-lbl"/>
+                <outlet property="taglineLabel" destination="lbl-tagline" id="out-tagline"/>
+                <outlet property="titleLabel" destination="lbl-title" id="out-title"/>
+                <outlet property="view" destination="iN0-l3-epB" id="out-view"/>
+                <outlet property="voteCountLabel" destination="lbl-vote-count" id="out-vote-cnt"/>
+                <outlet property="yearBadgeView" destination="vw-year-badge" id="out-year-vw"/>
+                <outlet property="yearLabel" destination="lbl-year" id="out-year-lbl"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB">
+            <rect key="frame" x="0.0" y="0.0" width="366" height="158"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <stackView opaque="NO" contentMode="scaleToFill" alignment="top" spacing="14" translatesAutoresizingMaskIntoConstraints="NO" id="stk-header-row">
+                    <rect key="frame" x="0.0" y="0.0" width="366" height="158"/>
+                    <subviews>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vw-poster-container" userLabel="PosterContainer">
+                            <rect key="frame" x="0.0" y="0.0" width="105" height="158"/>
+                            <subviews>
+                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="img-poster">
+                                    <rect key="frame" x="0.0" y="0.0" width="105" height="158"/>
+                                    <color key="backgroundColor" red="0.1019607843" green="0.1058823529" blue="0.1333333333" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </imageView>
+                            </subviews>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="158" id="cst-poster-h"/>
+                                <constraint firstAttribute="width" constant="105" id="cst-poster-w"/>
+                                <constraint firstItem="img-poster" firstAttribute="bottom" secondItem="vw-poster-container" secondAttribute="bottom" id="pos-b"/>
+                                <constraint firstItem="img-poster" firstAttribute="leading" secondItem="vw-poster-container" secondAttribute="leading" id="pos-l"/>
+                                <constraint firstItem="img-poster" firstAttribute="trailing" secondItem="vw-poster-container" secondAttribute="trailing" id="pos-r"/>
+                                <constraint firstItem="img-poster" firstAttribute="top" secondItem="vw-poster-container" secondAttribute="top" id="pos-t"/>
+                            </constraints>
+                        </view>
+                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="stk-title-meta">
+                            <rect key="frame" x="119" y="0.0" width="247" height="158"/>
+                            <subviews>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Movie Title" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lbl-title">
+                                    <rect key="frame" x="0.0" y="0.0" width="247" height="24"/>
+                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
+                                    <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="&quot;Tagline here&quot;" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lbl-tagline">
+                                    <rect key="frame" x="0.0" y="31.999999999999996" width="247" height="14.333333333333332"/>
+                                    <fontDescription key="fontDescription" type="italicSystem" pointSize="12"/>
+                                    <color key="textColor" red="0.75" green="0.75" blue="0.75" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vw-rate-badge" userLabel="RatingBadge">
+                                    <rect key="frame" x="0.0" y="54.333333333333343" width="247" height="26"/>
+                                    <subviews>
+                                        <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="stk-rating-content">
+                                            <rect key="frame" x="8" y="5.3333333333333277" width="72.666666666666671" height="15.666666666666664"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="★" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lbl-rate-star">
+                                                    <rect key="frame" x="0.0" y="0.0" width="13.666666666666666" height="15.666666666666666"/>
+                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="13"/>
+                                                    <color key="textColor" red="0.96078431369999995" green="0.7725490196" blue="0.094117647060000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="8.4" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lbl-rate-val">
+                                                    <rect key="frame" x="17.666666666666657" y="0.0" width="21.666666666666671" height="15.666666666666666"/>
+                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="13"/>
+                                                    <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="(1.2k)" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lbl-vote-count">
+                                                    <rect key="frame" x="43.333333333333343" y="1" width="29.333333333333329" height="13.333333333333334"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="11"/>
+                                                    <color key="textColor" red="0.65000000000000002" green="0.65000000000000002" blue="0.65000000000000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                        </stackView>
+                                    </subviews>
+                                    <color key="backgroundColor" red="0.12549019610000001" green="0.1333333333" blue="0.1647058824" alpha="0.90000000000000002" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="26" id="cst-rate-h"/>
+                                        <constraint firstItem="stk-rating-content" firstAttribute="centerY" secondItem="vw-rate-badge" secondAttribute="centerY" id="rt-cy"/>
+                                        <constraint firstItem="stk-rating-content" firstAttribute="leading" secondItem="vw-rate-badge" secondAttribute="leading" constant="8" id="rt-l"/>
+                                        <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="stk-rating-content" secondAttribute="trailing" constant="8" id="rt-tr"/>
+                                    </constraints>
+                                </view>
+                                <stackView opaque="NO" contentMode="scaleToFill" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="stk-meta-badges">
+                                    <rect key="frame" x="0.0" y="88.333333333333329" width="247" height="26"/>
+                                    <subviews>
+                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vw-year-badge">
+                                            <rect key="frame" x="0.0" y="0.0" width="56" height="26"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="2024" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lbl-year">
+                                                    <rect key="frame" x="8" y="6.0000000000000009" width="40" height="14.333333333333336"/>
+                                                    <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="12"/>
+                                                    <color key="textColor" red="0.90000000000000002" green="0.90000000000000002" blue="0.90000000000000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <color key="backgroundColor" red="0.10980392160000001" green="0.1137254902" blue="0.14117647059999999" alpha="0.80000000000000004" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <constraints>
+                                                <constraint firstItem="lbl-year" firstAttribute="centerY" secondItem="vw-year-badge" secondAttribute="centerY" id="yr-cy"/>
+                                                <constraint firstAttribute="height" constant="26" id="yr-h"/>
+                                                <constraint firstItem="lbl-year" firstAttribute="leading" secondItem="vw-year-badge" secondAttribute="leading" constant="8" id="yr-l"/>
+                                                <constraint firstAttribute="trailing" secondItem="lbl-year" secondAttribute="trailing" constant="8" id="yr-r"/>
+                                            </constraints>
+                                        </view>
+                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vw-dur-badge">
+                                            <rect key="frame" x="62" y="0.0" width="67" height="26"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="2h 15m" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lbl-dur">
+                                                    <rect key="frame" x="8" y="6.0000000000000009" width="51" height="14.333333333333336"/>
+                                                    <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="12"/>
+                                                    <color key="textColor" red="0.90000000000000002" green="0.90000000000000002" blue="0.90000000000000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <color key="backgroundColor" red="0.10980392160000001" green="0.1137254902" blue="0.14117647059999999" alpha="0.80000000000000004" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <constraints>
+                                                <constraint firstItem="lbl-dur" firstAttribute="centerY" secondItem="vw-dur-badge" secondAttribute="centerY" id="dur-cy"/>
+                                                <constraint firstAttribute="height" constant="26" id="dur-h"/>
+                                                <constraint firstItem="lbl-dur" firstAttribute="leading" secondItem="vw-dur-badge" secondAttribute="leading" constant="8" id="dur-l"/>
+                                                <constraint firstAttribute="trailing" secondItem="lbl-dur" secondAttribute="trailing" constant="8" id="dur-r"/>
+                                            </constraints>
+                                        </view>
+                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vw-lang-badge">
+                                            <rect key="frame" x="135" y="0.0" width="50" height="26"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="EN" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lbl-lang">
+                                                    <rect key="frame" x="8" y="6.3333333333333437" width="34" height="13.333333333333336"/>
+                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="11"/>
+                                                    <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <color key="backgroundColor" red="0.10980392160000001" green="0.1137254902" blue="0.14117647059999999" alpha="0.80000000000000004" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <constraints>
+                                                <constraint firstItem="lbl-lang" firstAttribute="centerY" secondItem="vw-lang-badge" secondAttribute="centerY" id="lang-cy"/>
+                                                <constraint firstAttribute="height" constant="26" id="lang-h"/>
+                                                <constraint firstItem="lbl-lang" firstAttribute="leading" secondItem="vw-lang-badge" secondAttribute="leading" constant="8" id="lang-l"/>
+                                                <constraint firstAttribute="trailing" secondItem="lbl-lang" secondAttribute="trailing" constant="8" id="lang-r"/>
+                                            </constraints>
+                                        </view>
+                                        <view contentMode="scaleToFill" horizontalHuggingPriority="240" horizontalCompressionResistancePriority="240" translatesAutoresizingMaskIntoConstraints="NO" id="vw-meta-spacer">
+                                            <rect key="frame" x="191" y="0.0" width="56" height="26"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </view>
+                                    </subviews>
+                                </stackView>
+                                <view contentMode="scaleToFill" horizontalHuggingPriority="240" verticalHuggingPriority="240" translatesAutoresizingMaskIntoConstraints="NO" id="vw-title-bottom-spacer">
+                                    <rect key="frame" x="0.0" y="122.33333333333333" width="247" height="35.666666666666671"/>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </view>
+                            </subviews>
+                        </stackView>
+                    </subviews>
+                </stackView>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <constraints>
+                <constraint firstAttribute="bottom" secondItem="stk-header-row" secondAttribute="bottom" id="row-b"/>
+                <constraint firstItem="stk-header-row" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="row-l"/>
+                <constraint firstItem="stk-header-row" firstAttribute="trailing" secondItem="iN0-l3-epB" secondAttribute="trailing" id="row-r"/>
+                <constraint firstItem="stk-header-row" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="row-t"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <point key="canvasLocation" x="132.30769230769229" y="19.90521327014218"/>
+        </view>
+    </objects>
+</document>
