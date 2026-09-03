@@ -7,4 +7,12 @@
         <attribute name="title" optional="YES" attributeType="String"/>
         <attribute name="voteAverage" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
     </entity>
+    <entity name="TicketEntity" representedClassName="TicketEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="movieId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="movieTitle" optional="YES" attributeType="String"/>
+        <attribute name="qrCodeString" optional="YES" attributeType="String"/>
+        <attribute name="seats" optional="YES" attributeType="String"/>
+        <attribute name="showtime" optional="YES" attributeType="String"/>
+        <attribute name="ticketId" optional="YES" attributeType="String"/>
+    </entity>
 </model>

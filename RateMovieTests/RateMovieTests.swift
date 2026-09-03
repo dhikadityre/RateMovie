@@ -63,4 +63,51 @@ final class RateMovieTests: XCTestCase {
         let similarVM = MovieDetailSimilarViewModel(movies: [])
         XCTAssertTrue(similarVM.movies.isEmpty)
     }
+
+    func testTicketPersistenceManager() {
+        let manager = TicketPersistenceManager.shared
+        let expectation = expectation(description: "Save and fetch ticket")
+        let testTicketId = "TEST_\(UUID().uuidString)"
+        
+        let newTicket = TicketModel(
+            ticketId: testTicketId,
+            movieId: 99999,
+            movieTitle: "Test Movie",
+            showtime: "19:00",
+            seats: "A1, A2",
+            qrCodeString: "QR_TEST_CODE"
+        )
+        
+        manager.saveTicket(newTicket) { result in
+            switch result {
+            case .success(let saved):
+                XCTAssertEqual(saved.ticketId, testTicketId)
+                XCTAssertEqual(saved.movieTitle, "Test Movie")
+                XCTAssertEqual(saved.seats, "A1, A2")
+                
+                manager.fetchTicket(by: testTicketId) { fetchResult in
+                    switch fetchResult {
+                    case .success(let fetchedTicket):
+                        XCTAssertNotNil(fetchedTicket)
+                        XCTAssertEqual(fetchedTicket?.ticketId, testTicketId)
+                        XCTAssertEqual(fetchedTicket?.movieId, 99999)
+                        XCTAssertEqual(fetchedTicket?.seats, "A1, A2")
+                        
+                        manager.deleteTicket(by: testTicketId) { deleteResult in
+                            expectation.fulfill()
+                        }
+                    case .failure(let error):
+                        XCTFail("Failed to fetch ticket: \(error.localizedDescription)")
+                        expectation.fulfill()
+                    }
+                }
+            case .failure(let error):
+                XCTFail("Failed to save ticket: \(error.localizedDescription)")
+                expectation.fulfill()
+            }
+        }
+        
+        waitForExpectations(timeout: 5.0, handler: nil)
+    }
 }
+

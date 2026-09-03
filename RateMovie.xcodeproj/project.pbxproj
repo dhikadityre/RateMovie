@@ -65,6 +65,8 @@
 		A020001028EEF32900000010 /* MovieDetailSimilarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A010001028EEF32900000010 /* MovieDetailSimilarViewModel.swift */; };
 		A020001128EEF32900000011 /* MovieDetailSimilarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A010001128EEF32900000011 /* MovieDetailSimilarView.swift */; };
 		A020001228EEF32900000012 /* MovieDetailSimilarView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A010001228EEF32900000012 /* MovieDetailSimilarView.xib */; };
+		B020000128EEF32900000001 /* TicketModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B010000128EEF32900000001 /* TicketModel.swift */; };
+		B020000228EEF32900000002 /* TicketPersistenceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B010000228EEF32900000002 /* TicketPersistenceManager.swift */; };
 		C72431CF2BA6C1400E56073E /* Pods_RateMovie.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED9E2DAA9FE3B657E2ECFB8A /* Pods_RateMovie.framework */; };
 		E622D28E2A758ED200A05ACD /* Endpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = E622D28D2A758ED200A05ACD /* Endpoint.swift */; };
 		E622D2902A75933A00A05ACD /* UICollectionView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E622D28F2A75933A00A05ACD /* UICollectionView+Extensions.swift */; };
@@ -166,6 +168,8 @@
 		A010001128EEF32900000011 /* MovieDetailSimilarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieDetailSimilarView.swift; sourceTree = "<group>"; };
 		A010001228EEF32900000012 /* MovieDetailSimilarView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MovieDetailSimilarView.xib; sourceTree = "<group>"; };
 		A9052B762144C4F4E45F3331 /* Pods_RateMovie_RateMovieUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RateMovie_RateMovieUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B010000128EEF32900000001 /* TicketModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketModel.swift; sourceTree = "<group>"; };
+		B010000228EEF32900000002 /* TicketPersistenceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketPersistenceManager.swift; sourceTree = "<group>"; };
 		E5A9389B7E8575041001DC5E /* Pods-RateMovie.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RateMovie.debug.xcconfig"; path = "Target Support Files/Pods-RateMovie/Pods-RateMovie.debug.xcconfig"; sourceTree = "<group>"; };
 		E622D28D2A758ED200A05ACD /* Endpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Endpoint.swift; sourceTree = "<group>"; };
 		E622D28F2A75933A00A05ACD /* UICollectionView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UICollectionView+Extensions.swift"; sourceTree = "<group>"; };
@@ -211,6 +215,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		702482783049716B004C9126 /* Ticket */ = {
+			isa = PBXGroup;
+			children = (
+				7024827B3049719B004C9126 /* Local */,
+				B010000128EEF32900000001 /* TicketModel.swift */,
+			);
+			path = Ticket;
+			sourceTree = "<group>";
+		};
+		7024827B3049719B004C9126 /* Local */ = {
+			isa = PBXGroup;
+			children = (
+				B010000228EEF32900000002 /* TicketPersistenceManager.swift */,
+			);
+			path = Local;
+			sourceTree = "<group>";
+		};
 		7036614E28EEEB7B0015667B = {
 			isa = PBXGroup;
 			children = (
@@ -463,6 +484,7 @@
 		703661C328EF027F0015667B /* Repositories */ = {
 			isa = PBXGroup;
 			children = (
+				702482783049716B004C9126 /* Ticket */,
 				708CF8EB28F2D11700FCD6FE /* Movie */,
 			);
 			path = Repositories;
@@ -1001,6 +1023,8 @@
 				A020000E28EEF3290000000E /* MovieDetailStorylineView.swift in Sources */,
 				A020001028EEF32900000010 /* MovieDetailSimilarViewModel.swift in Sources */,
 				A020001128EEF32900000011 /* MovieDetailSimilarView.swift in Sources */,
+				B020000128EEF32900000001 /* TicketModel.swift in Sources */,
+				B020000228EEF32900000002 /* TicketPersistenceManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
