@@ -280,7 +280,6 @@
 			children = (
 				E622D2912A75938D00A05ACD /* Controller */,
 				7036619828EEF2C80015667B /* ViewModel */,
-				7036619928EEF2CF0015667B /* View */,
 			);
 			path = MovieList;
 			sourceTree = "<group>";
@@ -291,13 +290,6 @@
 				703661AC28EEF9200015667B /* MovieListViewModel.swift */,
 			);
 			path = ViewModel;
-			sourceTree = "<group>";
-		};
-		7036619928EEF2CF0015667B /* View */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = View;
 			sourceTree = "<group>";
 		};
 		7036619A28EEF2E10015667B /* MovieListCollectionView */ = {
@@ -322,7 +314,6 @@
 			children = (
 				E622D2A02A75A07800A05ACD /* Controller */,
 				7036619D28EEF33B0015667B /* ViewModel */,
-				7036619E28EEF3430015667B /* View */,
 			);
 			path = MovieDetails;
 			sourceTree = "<group>";
@@ -333,13 +324,6 @@
 				70F03F8628EFD95B00D016C9 /* MovieDetailsViewModel.swift */,
 			);
 			path = ViewModel;
-			sourceTree = "<group>";
-		};
-		7036619E28EEF3430015667B /* View */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = View;
 			sourceTree = "<group>";
 		};
 		7036619F28EEF3540015667B /* MovieFavouritesTableView */ = {
