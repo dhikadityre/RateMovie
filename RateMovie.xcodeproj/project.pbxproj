@@ -69,6 +69,9 @@
 		B020000228EEF32900000002 /* TicketPersistenceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B010000228EEF32900000002 /* TicketPersistenceManager.swift */; };
 		B020000328EEF32900000003 /* InteractiveRatingWidgetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B010000328EEF32900000003 /* InteractiveRatingWidgetView.swift */; };
 		B020000428EEF32900000004 /* InteractiveRatingWidgetViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B010000428EEF32900000004 /* InteractiveRatingWidgetViewModel.swift */; };
+		B020000528EEF32900000005 /* SeatBookingModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = B010000528EEF32900000005 /* SeatBookingModels.swift */; };
+		B020000628EEF32900000006 /* SeatBookingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B010000628EEF32900000006 /* SeatBookingViewModel.swift */; };
+		B020000728EEF32900000007 /* SeatBookingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B010000728EEF32900000007 /* SeatBookingView.swift */; };
 		C72431CF2BA6C1400E56073E /* Pods_RateMovie.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED9E2DAA9FE3B657E2ECFB8A /* Pods_RateMovie.framework */; };
 		E622D28E2A758ED200A05ACD /* Endpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = E622D28D2A758ED200A05ACD /* Endpoint.swift */; };
 		E622D2902A75933A00A05ACD /* UICollectionView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E622D28F2A75933A00A05ACD /* UICollectionView+Extensions.swift */; };
@@ -174,6 +177,9 @@
 		B010000228EEF32900000002 /* TicketPersistenceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketPersistenceManager.swift; sourceTree = "<group>"; };
 		B010000328EEF32900000003 /* InteractiveRatingWidgetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractiveRatingWidgetView.swift; sourceTree = "<group>"; };
 		B010000428EEF32900000004 /* InteractiveRatingWidgetViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractiveRatingWidgetViewModel.swift; sourceTree = "<group>"; };
+		B010000528EEF32900000005 /* SeatBookingModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeatBookingModels.swift; sourceTree = "<group>"; };
+		B010000628EEF32900000006 /* SeatBookingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeatBookingViewModel.swift; sourceTree = "<group>"; };
+		B010000728EEF32900000007 /* SeatBookingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeatBookingView.swift; sourceTree = "<group>"; };
 		E5A9389B7E8575041001DC5E /* Pods-RateMovie.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RateMovie.debug.xcconfig"; path = "Target Support Files/Pods-RateMovie/Pods-RateMovie.debug.xcconfig"; sourceTree = "<group>"; };
 		E622D28D2A758ED200A05ACD /* Endpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Endpoint.swift; sourceTree = "<group>"; };
 		E622D28F2A75933A00A05ACD /* UICollectionView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UICollectionView+Extensions.swift"; sourceTree = "<group>"; };
@@ -332,6 +338,7 @@
 				7036619728EEF2AB0015667B /* MovieList */,
 				703661A128EEF3730015667B /* MovieFavourites */,
 				7036619C28EEF3290015667B /* MovieDetails */,
+				B030000128EEF32900000001 /* SeatBooking */,
 			);
 			path = MovieScene;
 			sourceTree = "<group>";
@@ -638,6 +645,40 @@
 				B010000328EEF32900000003 /* InteractiveRatingWidgetView.swift */,
 			);
 			path = Rating;
+			sourceTree = "<group>";
+		};
+		B030000128EEF32900000001 /* SeatBooking */ = {
+			isa = PBXGroup;
+			children = (
+				B030000228EEF32900000002 /* Model */,
+				B030000328EEF32900000003 /* ViewModel */,
+				B030000428EEF32900000004 /* View */,
+			);
+			path = SeatBooking;
+			sourceTree = "<group>";
+		};
+		B030000228EEF32900000002 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				B010000528EEF32900000005 /* SeatBookingModels.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		B030000328EEF32900000003 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				B010000628EEF32900000006 /* SeatBookingViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		B030000428EEF32900000004 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				B010000728EEF32900000007 /* SeatBookingView.swift */,
+			);
+			path = View;
 			sourceTree = "<group>";
 		};
 		AAEDC7522C9E207E19CCC421 /* Frameworks */ = {
@@ -1041,6 +1082,9 @@
 				B020000228EEF32900000002 /* TicketPersistenceManager.swift in Sources */,
 				B020000328EEF32900000003 /* InteractiveRatingWidgetView.swift in Sources */,
 				B020000428EEF32900000004 /* InteractiveRatingWidgetViewModel.swift in Sources */,
+				B020000528EEF32900000005 /* SeatBookingModels.swift in Sources */,
+				B020000628EEF32900000006 /* SeatBookingViewModel.swift in Sources */,
+				B020000728EEF32900000007 /* SeatBookingView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

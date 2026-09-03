@@ -161,6 +161,90 @@ final class RateMovieTests: XCTestCase {
             XCTAssertTrue(stackView.arrangedSubviews.contains(hostingView), "Hosting controller view should be an arranged subview in contentStackView")
         }
     }
+
+    func testSeatBookingModels() {
+        let seat = SeatModel(row: "B", number: 4, status: .available, price: 15.0)
+        XCTAssertEqual(seat.seatCode, "B4")
+        XCTAssertEqual(seat.status, .available)
+        XCTAssertEqual(seat.price, 15.0)
+        
+        let date = BookingDate(dayOfWeek: "THU", dayNumber: "04", month: "SEP", fullDateString: "04 Sep 2026")
+        XCTAssertEqual(date.dayOfWeek, "THU")
+        XCTAssertEqual(date.dayNumber, "04")
+        
+        let time = BookingTime(timeString: "19:30", hallName: "IMAX Laser")
+        XCTAssertEqual(time.timeString, "19:30")
+        XCTAssertEqual(time.hallName, "IMAX Laser")
+        
+        let summary = SeatBookingSummary(
+            movieId: 101,
+            movieTitle: "Dune",
+            date: "04 Sep",
+            time: "19:30",
+            seats: "B4, B5",
+            selectedSeatsList: ["B4", "B5"],
+            totalPrice: 30.0,
+            cinemaHall: "IMAX Laser"
+        )
+        let ticketModel = summary.toTicketModel()
+        XCTAssertEqual(ticketModel.movieId, 101)
+        XCTAssertEqual(ticketModel.movieTitle, "Dune")
+        XCTAssertEqual(ticketModel.seats, "B4, B5")
+        XCTAssertNotNil(ticketModel.ticketId)
+    }
+
+    func testSeatBookingViewModelFlow() {
+        var confirmedSummary: SeatBookingSummary?
+        
+        let viewModel = SeatBookingViewModel(
+            movieId: 550,
+            movieTitle: "Fight Club",
+            cinemaHall: "Hall 2 - Dolby Atmos",
+            ticketPricePerSeat: 10.0,
+            onConfirmBooking: { summary in
+                confirmedSummary = summary
+            }
+        )
+        
+        // Initial state
+        XCTAssertEqual(viewModel.movieTitle, "Fight Club")
+        XCTAssertEqual(viewModel.totalPrice, 0.0)
+        XCTAssertFalse(viewModel.canConfirm)
+        XCTAssertEqual(viewModel.selectedSeatsFormatted, "No seat selected")
+        
+        // Select seat B1 (available)
+        viewModel.toggleSeat(row: "B", number: 1)
+        XCTAssertTrue(viewModel.canConfirm)
+        XCTAssertEqual(viewModel.totalPrice, 10.0)
+        XCTAssertEqual(viewModel.totalPriceFormatted, "$10.00")
+        XCTAssertTrue(viewModel.selectedSeatsFormatted.contains("B1"))
+        
+        // Select seat B2 (available)
+        viewModel.toggleSeat(row: "B", number: 2)
+        XCTAssertEqual(viewModel.totalPrice, 20.0)
+        XCTAssertEqual(viewModel.totalPriceFormatted, "$20.00")
+        
+        // Attempt to select reserved seat (A3 is reserved in mock generator)
+        viewModel.toggleSeat(row: "A", number: 3)
+        XCTAssertFalse(viewModel.selectedSeatIDs.contains("A3"))
+        XCTAssertEqual(viewModel.totalPrice, 20.0)
+        
+        // Change date and time
+        let newDate = BookingDate(dayOfWeek: "FRI", dayNumber: "05", month: "SEP", fullDateString: "05 Sep 2026")
+        let newTime = BookingTime(timeString: "21:00")
+        viewModel.selectDate(newDate)
+        viewModel.selectTime(newTime)
+        XCTAssertEqual(viewModel.selectedDate.id, newDate.id)
+        XCTAssertEqual(viewModel.selectedTime.id, newTime.id)
+        
+        // Confirm booking
+        viewModel.confirmBooking()
+        XCTAssertNotNil(confirmedSummary)
+        XCTAssertEqual(confirmedSummary?.movieTitle, "Fight Club")
+        XCTAssertEqual(confirmedSummary?.movieId, 550)
+        XCTAssertEqual(confirmedSummary?.totalPrice, 20.0)
+        XCTAssertEqual(confirmedSummary?.selectedSeatsList, ["B1", "B2"])
+    }
 }
 
 
