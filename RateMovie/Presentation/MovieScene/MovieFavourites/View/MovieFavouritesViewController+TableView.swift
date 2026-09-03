@@ -26,21 +26,64 @@ extension MovieFavouritesViewController: UITableViewDelegate, UITableViewDataSou
                 for: indexPath
             ) as? MovieItemTableViewCell
         else { return UITableViewCell() }
-        let data = viewModel?.movieFavouriteList.value?[indexPath.row]
-        movieCell.titleLabel.text = data?.title
-        if let movieRate = data?.voteAverage {
-            movieCell.rateLabel.text = "⭐ " + String(movieRate)
-        }
-        if let url = data?.posterPath,
-           let imageUrl = URL(string: Endpoint.Images.baseImage + url)
-        {
-            movieCell.moviePreviewImageView.kf.setImage(with: imageUrl, placeholder: UIImage.init(named: ""), options: [.transition(.fade(0))], progressBlock: nil, completionHandler: nil)
+        
+        if let data = viewModel?.movieFavouriteList.value?[indexPath.row] {
+            movieCell.configure(
+                title: data.title,
+                rating: data.voteAverage,
+                language: data.originalLanguage,
+                posterPath: data.posterPath,
+                isFavorite: true
+            )
+            
+            movieCell.onTapFavourite = { [weak self] in
+                guard let id = data.id else { return }
+                self?.triggerOnTapUnfavourite(movieId: id)
+            }
         }
         
-        movieCell.onTapFavourite = { [weak self] in
-            guard let id = data?.id else { return }
-            self?.triggerOnTapUnfavourite(movieId: id)
-        }
         return movieCell
+    }
+    
+    func tableView(
+        _ tableView: UITableView,
+        didSelectRowAt indexPath: IndexPath
+    ) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        guard let data = viewModel?.movieFavouriteList.value?[indexPath.row],
+              let movieId = data.id else { return }
+        
+        let movieResult = FavoriteNowPlaying(
+            isFavorite: true,
+            posterPath: data.posterPath,
+            adult: nil,
+            overview: nil,
+            releaseDate: nil,
+            genreIDS: nil,
+            id: data.id,
+            originalTitle: data.title,
+            originalLanguage: data.originalLanguage,
+            title: data.title,
+            backdropPath: nil,
+            popularity: nil,
+            voteCount: nil,
+            video: nil,
+            voteAverage: data.voteAverage
+        )
+        
+        let detailVC = MovieDetailsViewController()
+        detailVC.hidesBottomBarWhenPushed = true
+        let vm = DefaultMovieDetailsViewModel(
+            movieId: movieId,
+            movieResult: movieResult,
+            useCase: DefaultFetchMovieSimilarUseCase(
+                repository: DefaultBaseMovieRepository(
+                    remoteData: DefaultBaseRemoteMovies(),
+                    localData: DefaultBaseLocalMovies()
+                )
+            )
+        )
+        detailVC.viewModel = vm
+        navigationController?.pushViewController(detailVC, animated: true)
     }
 }
