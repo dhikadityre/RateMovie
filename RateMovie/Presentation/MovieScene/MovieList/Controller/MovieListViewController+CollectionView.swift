@@ -28,41 +28,35 @@ extension MovieListViewController: UICollectionViewDelegate, UICollectionViewDat
         else { return UICollectionViewCell() }
         
         let data = viewModel?.movieList.value[indexPath.row]
-        movieCell.movieTitleLabel.text = data?.title
-        if let movieRate = data?.voteAverage {
-            movieCell.movieRateLabel.text = "⭐ \(String(describing: movieRate))/10"
-        }
-        movieCell.movieLanguageLabel.text = data?.originalLanguage
-        if let url = data?.posterPath, let imageUrl = URL(string: Endpoint.Images.baseImage + url) {
-            movieCell.moviePreviewImageView.kf.setImage(with: imageUrl, placeholder: UIImage.init(named: ""), options: [.transition(.fade(0))], progressBlock: nil, completionHandler: nil)
-        }
+        let isFavorite = data?.isFavorite ?? false
         
-        movieCell.movieFavoriteImageView.image = data?.isFavorite! ?? false
-        ? UIImage(systemName: "bookmark.fill")
-        : UIImage(systemName: "bookmark")
+        movieCell.configure(
+            title: data?.title,
+            rating: data?.voteAverage,
+            language: data?.originalLanguage,
+            posterPath: data?.posterPath,
+            isFavorite: isFavorite
+        )
+        
         movieCell.onFavouriteTapped = { [weak self] in
+            guard let self = self, let currentData = self.viewModel?.movieList.value[indexPath.row] else { return }
             let selectedData = MoviesFavouritesModel(
-                id: data?.id,
-                title: data?.title,
-                originalLanguage: data?.originalLanguage,
-                posterPath: data?.posterPath,
-                voteAverage: data?.voteAverage
+                id: currentData.id,
+                title: currentData.title,
+                originalLanguage: currentData.originalLanguage,
+                posterPath: currentData.posterPath,
+                voteAverage: currentData.voteAverage
             )
-            if let isFavorite = data?.isFavorite {
-                if isFavorite {
-                    guard let id = data?.id else { return }
-                    self?.viewModel?.deleteFavorite(with: id)
-                    movieCell.movieFavoriteImageView.image = UIImage(
-                        systemName: "bookmark"
-                    )
+            if let isFav = currentData.isFavorite {
+                if isFav {
+                    guard let id = currentData.id else { return }
+                    self.viewModel?.deleteFavorite(with: id)
+                    movieCell.setFavorite(isFavorite: false, animated: true)
                 } else {
-                    self?.viewModel?.addMovieToFavorite(which: selectedData)
-                    movieCell.movieFavoriteImageView.image = UIImage(
-                        systemName: "bookmark.fill"
-                    )
+                    self.viewModel?.addMovieToFavorite(which: selectedData)
+                    movieCell.setFavorite(isFavorite: true, animated: true)
                 }
             }
-
         }
         
         return movieCell
