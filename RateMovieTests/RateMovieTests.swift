@@ -270,6 +270,125 @@ final class RateMovieTests: XCTestCase {
         }
         XCTAssertTrue(hostingVC.hidesBottomBarWhenPushed)
     }
+    
+    func testTicketPassViewModel() {
+        // Raw initialization
+        let vm = TicketPassViewModel(
+            ticketId: "TICKET-12345",
+            movieId: 808,
+            movieTitle: "Oppenheimer",
+            showtime: "Fri, 04 Sep • 20:00",
+            seats: "C4, C5",
+            cinemaHall: "IMAX Laser",
+            totalPriceFormatted: "Rp 120.000",
+            qrCodeString: "QR-OPPENHEIMER-808"
+        )
+        XCTAssertEqual(vm.ticketId, "TICKET-12345")
+        XCTAssertEqual(vm.movieId, 808)
+        XCTAssertEqual(vm.movieTitle, "Oppenheimer")
+        XCTAssertEqual(vm.showtime, "Fri, 04 Sep • 20:00")
+        XCTAssertEqual(vm.seats, "C4, C5")
+        XCTAssertEqual(vm.cinemaHall, "IMAX Laser")
+        XCTAssertEqual(vm.totalPriceFormatted, "Rp 120.000")
+        XCTAssertEqual(vm.qrCodeString, "QR-OPPENHEIMER-808")
+        
+        // QR Code Generation
+        let qrImage = vm.generateQRCodeImage()
+        XCTAssertNotNil(qrImage, "QR code image should be successfully generated")
+        
+        // TicketModel convenience init
+        let ticketModel = TicketModel(
+            ticketId: "TICKET-999",
+            movieId: 101,
+            movieTitle: "Interstellar",
+            showtime: "18:00",
+            seats: "A1, A2",
+            qrCodeString: "QR-INTERSTELLAR"
+        )
+        let ticketVM = TicketPassViewModel(ticket: ticketModel)
+        XCTAssertEqual(ticketVM.ticketId, "TICKET-999")
+        XCTAssertEqual(ticketVM.movieTitle, "Interstellar")
+        XCTAssertEqual(ticketVM.seats, "A1, A2")
+        
+        // SeatBookingSummary convenience init
+        let summary = SeatBookingSummary(
+            ticketId: "SUM-001",
+            movieId: 550,
+            movieTitle: "Fight Club",
+            showtime: "Sat, 05 Sep • 21:00",
+            date: "05 Sep",
+            time: "21:00",
+            seats: "D1, D2",
+            selectedSeatsList: ["D1", "D2"],
+            totalPrice: 100_000.0,
+            cinemaHall: "Hall 2"
+        )
+        let summaryVM = TicketPassViewModel(summary: summary)
+        XCTAssertEqual(summaryVM.ticketId, "SUM-001")
+        XCTAssertEqual(summaryVM.movieTitle, "Fight Club")
+        XCTAssertEqual(summaryVM.seats, "D1, D2")
+        XCTAssertEqual(summaryVM.cinemaHall, "Hall 2")
+        XCTAssertEqual(summaryVM.totalPriceFormatted, "Rp 100.000")
+        
+        // Dummy fallback
+        let dummyVM = TicketPassViewModel.dummy
+        XCTAssertFalse(dummyVM.ticketId.isEmpty)
+        XCTAssertFalse(dummyVM.movieTitle.isEmpty)
+        XCTAssertNotNil(dummyVM.generateQRCodeImage())
+    }
+    
+    func testTicketPassViewController() {
+        let vm = TicketPassViewModel(
+            ticketId: "TICKET-TEST-99",
+            movieId: 99,
+            movieTitle: "Avatar: The Way of Water",
+            showtime: "Sat, 05 Sep • 15:00",
+            seats: "E5, E6",
+            cinemaHall: "Hall 3 - Dolby Atmos",
+            totalPriceFormatted: "Rp 110.000",
+            qrCodeString: "QR-AVATAR-99"
+        )
+        
+        var didCallDone = false
+        vm.onDone = {
+            didCallDone = true
+        }
+        
+        let vc = TicketPassViewController(viewModel: vm)
+        vc.loadViewIfNeeded()
+        
+        // Hierarchy checks
+        XCTAssertNotNil(vc.ticketCardView, "Ticket card view should be present")
+        XCTAssertNotNil(vc.movieTitleLabel, "Movie title label should be present")
+        XCTAssertNotNil(vc.seatsLabel, "Seats label should be present")
+        XCTAssertNotNil(vc.showtimeLabel, "Showtime label should be present")
+        XCTAssertNotNil(vc.cinemaHallLabel, "Cinema hall label should be present")
+        XCTAssertNotNil(vc.priceLabel, "Price label should be present")
+        XCTAssertNotNil(vc.ticketIdLabel, "Ticket id label should be present")
+        XCTAssertNotNil(vc.qrImageView, "QR image view should be present")
+        XCTAssertNotNil(vc.doneButton, "Done button should be present")
+        
+        // Data binding checks
+        XCTAssertEqual(vc.movieTitleLabel.text, "Avatar: The Way of Water")
+        XCTAssertEqual(vc.seatsLabel.text, "E5, E6")
+        XCTAssertEqual(vc.showtimeLabel.text, "Sat, 05 Sep • 15:00")
+        XCTAssertEqual(vc.cinemaHallLabel.text, "HALL 3 - DOLBY ATMOS")
+        XCTAssertEqual(vc.priceLabel.text, "Rp 110.000")
+        XCTAssertEqual(vc.ticketIdLabel.text, "TICKET-TEST-99")
+        XCTAssertEqual(vc.qrCodeLabel.text, "QR-AVATAR-99")
+        XCTAssertNotNil(vc.qrImageView.image, "QR code image should be set in qrImageView")
+        
+        // Action check
+        vc.didTapDone()
+        XCTAssertTrue(didCallDone, "onDone closure should be invoked when tapping done")
+        
+        // Default dummy initialization check
+        let defaultVC = TicketPassViewController()
+        defaultVC.loadViewIfNeeded()
+        XCTAssertNotNil(defaultVC.movieTitleLabel.text)
+        XCTAssertFalse(defaultVC.movieTitleLabel.text?.isEmpty ?? true)
+        XCTAssertNotNil(defaultVC.qrImageView.image)
+    }
 }
 
 
