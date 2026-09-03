@@ -14,10 +14,7 @@ extension MovieDetailsViewController: UICollectionViewDelegateFlowLayout {
         layout collectionViewLayout: UICollectionViewLayout,
         sizeForItemAt indexPath: IndexPath
     ) -> CGSize {
-        let height = collectionView.frame.size.height
-        let width = collectionView.frame.size.width
-        let twoColumnCellWidth = (width - 40) / 3
-        return CGSize(width: twoColumnCellWidth, height: height)
+        return CGSize(width: 125, height: 215)
     }
     
     func collectionView(
@@ -25,7 +22,7 @@ extension MovieDetailsViewController: UICollectionViewDelegateFlowLayout {
         layout collectionViewLayout: UICollectionViewLayout,
         minimumLineSpacingForSectionAt section: Int
     ) -> CGFloat {
-        return 8
+        return 14
     }
     
     func collectionView(
@@ -33,6 +30,6 @@ extension MovieDetailsViewController: UICollectionViewDelegateFlowLayout {
         layout collectionViewLayout: UICollectionViewLayout,
         insetForSectionAt section: Int
     ) -> UIEdgeInsets {
-        return UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
+        return UIEdgeInsets(top: 0, left: 16, bottom: 8, right: 16)
     }
 }
