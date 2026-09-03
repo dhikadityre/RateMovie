@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import SwiftUI
 
 class TabBarController: UITabBarController {
   override func viewDidLoad() {
@@ -23,7 +24,7 @@ class TabBarController: UITabBarController {
   func createBaseTabBar() {
     self.viewControllers = [
       makeNavigation(viewController: createMovieListTab()),
-      makeNavigation(viewController: createMovieFavouritesTab())
+      makeNavigation(viewController: createUserProfileTab())
     ]
   }
   
@@ -54,6 +55,10 @@ class TabBarController: UITabBarController {
   }
   
   func moveToFavoritesController() {
+    self.selectedIndex = 1
+  }
+  
+  func moveToProfileController() {
     self.selectedIndex = 1
   }
 }
@@ -89,6 +94,15 @@ extension TabBarController {
     movieListController.tabBarItem.image = UIImage(systemName: "film")
     movieListController.tabBarItem.selectedImage = UIImage(systemName: "film.fill")
     return movieListController
+  }
+  
+  private func createUserProfileTab() -> UIViewController {
+    let userProfileView = UserProfileView()
+    let profileHostingController = UIHostingController(rootView: userProfileView)
+    profileHostingController.tabBarItem.title = "Profile"
+    profileHostingController.tabBarItem.image = UIImage(systemName: "person")
+    profileHostingController.tabBarItem.selectedImage = UIImage(systemName: "person.fill")
+    return profileHostingController
   }
   
   private func createMovieFavouritesTab() -> UIViewController {
