@@ -61,28 +61,55 @@ class MovieDetailInfoView: UIView {
         setupStyle()
     }
     
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        if #available(iOS 13.0, *), traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) {
+            updateStyles()
+        }
+    }
+    
+    private func updateStyles() {
+        titleLabel.textColor = RMColor.textPrimary
+        taglineLabel.textColor = RMColor.textSecondary
+        ratingLabel.textColor = RMColor.accentRating
+        voteCountLabel.textColor = RMColor.textSecondary
+        [yearLabel, durationLabel, languageLabel].forEach { label in
+            label?.textColor = RMColor.textPrimary
+        }
+        
+        posterImageView.backgroundColor = RMColor.surfaceBadge
+        posterImageView.layer.borderColor = RMColor.borderEmphasis.cgColor
+        
+        ratingBadgeView.backgroundColor = RMColor.surfaceCard
+        ratingBadgeView.layer.borderColor = RMColor.accentRating.withAlphaComponent(0.4).cgColor
+        
+        [yearBadgeView, durationBadgeView, languageBadgeView].forEach { badge in
+            badge?.backgroundColor = RMColor.surfaceCard
+            badge?.layer.borderColor = RMColor.borderSubtle.cgColor
+        }
+    }
+    
     private func setupStyle() {
         // Poster Styling & Ambient Depth
         posterImageView.layer.cornerRadius = 14
         posterImageView.layer.borderWidth = 0.8
-        posterImageView.layer.borderColor = UIColor.white.withAlphaComponent(0.18).cgColor
         
         posterContainerView.layer.shadowColor = UIColor.black.cgColor
-        posterContainerView.layer.shadowOpacity = 0.55
-        posterContainerView.layer.shadowOffset = CGSize(width: 0, height: 8)
-        posterContainerView.layer.shadowRadius = 14
+        posterContainerView.layer.shadowOpacity = 0.18
+        posterContainerView.layer.shadowOffset = CGSize(width: 0, height: 6)
+        posterContainerView.layer.shadowRadius = 12
         
         // Rating Badge
         ratingBadgeView.layer.cornerRadius = 8
         ratingBadgeView.layer.borderWidth = 0.5
-        ratingBadgeView.layer.borderColor = goldRatingColor.withAlphaComponent(0.4).cgColor
         
         // Metadata Badges
         [yearBadgeView, durationBadgeView, languageBadgeView].forEach { badge in
             badge?.layer.cornerRadius = 8
             badge?.layer.borderWidth = 0.5
-            badge?.layer.borderColor = UIColor.white.withAlphaComponent(0.12).cgColor
         }
+        
+        updateStyles()
     }
 }
 

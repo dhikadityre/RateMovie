@@ -17,6 +17,7 @@ class MovieDetailStorylineView: UIView {
     
     var onToggleExpand: (() -> Void)?
     private var isOverviewExpanded = false
+    private var currentOverview: String = ""
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -28,6 +29,13 @@ class MovieDetailStorylineView: UIView {
         commonInit()
     }
     
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        if #available(iOS 13.0, *), traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) {
+            renderOverview()
+        }
+    }
+    
     private func commonInit() {
         let bundle = Bundle(for: type(of: self))
         let nibName = String(describing: type(of: self))
@@ -37,7 +45,16 @@ class MovieDetailStorylineView: UIView {
             addSubview(loadedView)
             self.view = loadedView
         }
+        setupStyle()
         setupActions()
+    }
+    
+    private func setupStyle() {
+        storylineBarView.backgroundColor = RMColor.brandPrimary
+        storylineBarView.layer.cornerRadius = 2
+        storylineTitleLabel.textColor = RMColor.textPrimary
+        readMoreButton.tintColor = RMColor.brandPrimary
+        readMoreButton.setTitleColor(RMColor.brandPrimary, for: .normal)
     }
     
     private func setupActions() {
@@ -50,22 +67,28 @@ class MovieDetailStorylineView: UIView {
         readMoreButton.setTitle(isOverviewExpanded ? "Read Less" : "Read More", for: .normal)
         onToggleExpand?()
     }
-}
-
-extension MovieDetailStorylineView {
-    func setView(with viewModel: MovieDetailStorylineViewModel) {
+    
+    private func renderOverview() {
+        guard !currentOverview.isEmpty else { return }
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineSpacing = 4
         
         let attributed = NSAttributedString(
-            string: viewModel.overview,
+            string: currentOverview,
             attributes: [
                 .paragraphStyle: paragraphStyle,
                 .font: UIFont.systemFont(ofSize: 14, weight: .regular),
-                .foregroundColor: UIColor(red: 209/255, green: 213/255, blue: 219/255, alpha: 1.0)
+                .foregroundColor: RMColor.textSecondary
             ]
         )
         overviewDescriptionLabel.attributedText = attributed
+    }
+}
+
+extension MovieDetailStorylineView {
+    func setView(with viewModel: MovieDetailStorylineViewModel) {
+        self.currentOverview = viewModel.overview
+        renderOverview()
         readMoreButton.isHidden = viewModel.overview.count < 140
     }
 }

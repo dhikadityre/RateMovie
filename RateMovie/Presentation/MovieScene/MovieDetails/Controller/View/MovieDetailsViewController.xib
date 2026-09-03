@@ -59,7 +59,7 @@
                                     </subviews>
                                 </stackView>
                             </subviews>
-                            <color key="backgroundColor" red="0.062745098040000002" green="0.066666666669999999" blue="0.08235294118" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <constraints>
                                 <constraint firstItem="vw-header" firstAttribute="top" secondItem="vw-content-holder" secondAttribute="top" id="hdr-t"/>
                                 <constraint firstItem="vw-header" firstAttribute="leading" secondItem="vw-content-holder" secondAttribute="leading" id="hdr-l"/>
@@ -71,7 +71,7 @@
                             </constraints>
                         </view>
                     </subviews>
-                    <color key="backgroundColor" red="0.062745098040000002" green="0.066666666669999999" blue="0.08235294118" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
                         <constraint firstItem="vw-content-holder" firstAttribute="top" secondItem="scrl-main" secondAttribute="top" id="sc-t"/>
                         <constraint firstItem="vw-content-holder" firstAttribute="leading" secondItem="scrl-main" secondAttribute="leading" id="sc-l"/>
@@ -86,7 +86,7 @@
                 </view>
             </subviews>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
-            <color key="backgroundColor" red="0.062745098040000002" green="0.066666666669999999" blue="0.08235294118" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <constraints>
                 <constraint firstItem="scrl-main" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="scr-l"/>
                 <constraint firstItem="scrl-main" firstAttribute="trailing" secondItem="i5M-Pr-FkT" secondAttribute="trailing" id="scr-r"/>

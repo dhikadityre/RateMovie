@@ -37,7 +37,16 @@ class MovieDetailSimilarView: UIView {
             addSubview(loadedView)
             self.view = loadedView
         }
+        setupStyle()
         setupCollectionView()
+    }
+    
+    private func setupStyle() {
+        similarBarView.backgroundColor = RMColor.brandPrimary
+        similarBarView.layer.cornerRadius = 2
+        similarTitleLabel.textColor = RMColor.textPrimary
+        emptyLabel.textColor = RMColor.textTertiary
+        collectionView.backgroundColor = .clear
     }
     
     private func setupCollectionView() {

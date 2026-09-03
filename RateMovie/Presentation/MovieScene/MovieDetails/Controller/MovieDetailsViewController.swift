@@ -20,14 +20,14 @@ class MovieDetailsViewController: UIViewController {
     
     // MARK: - ViewModel
     var viewModel: MovieDetailsViewModel?
-    
-    // MARK: - Appearance Properties
-    private let darkBackground = UIColor(red: 16/255, green: 17/255, blue: 21/255, alpha: 1.0)
 }
 
 // MARK: - Lifecycle
 extension MovieDetailsViewController {
     override var preferredStatusBarStyle: UIStatusBarStyle {
+        if #available(iOS 13.0, *) {
+            return traitCollection.userInterfaceStyle == .dark ? .lightContent : .darkContent
+        }
         return .lightContent
     }
     
@@ -53,7 +53,8 @@ extension MovieDetailsViewController {
 // MARK: - UI & Callbacks Setup
 extension MovieDetailsViewController {
     private func setupUI() {
-        view.backgroundColor = darkBackground
+        view.backgroundColor = RMColor.backgroundPrimary
+        scrollView.backgroundColor = RMColor.backgroundPrimary
         scrollView.delegate = self
         updateComponents()
     }

@@ -54,13 +54,28 @@ class MovieItemCollectionViewCell: UICollectionViewCell {
         transform = .identity
     }
     
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        if #available(iOS 13.0, *), traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) {
+            updateBorderColors()
+        }
+    }
+    
+    private func updateBorderColors() {
+        containerView.layer.borderColor = RMColor.borderSubtle.cgColor
+        favoriteView.layer.borderColor = RMColor.borderEmphasis.cgColor
+        movieLanguageLabel.superview?.layer.borderColor = RMColor.borderSubtle.cgColor
+    }
+    
     private func setupUI() {
         // Container styling & smooth ambient shadow
-        containerView.backgroundColor = UIColor(red: 28/255, green: 28/255, blue: 32/255, alpha: 1.0)
+        containerView.backgroundColor = RMColor.surfaceCard
         containerView.layer.cornerRadius = 14
+        containerView.layer.borderWidth = 0.5
+        containerView.layer.borderColor = RMColor.borderSubtle.cgColor
         containerView.layer.masksToBounds = false
         containerView.layer.shadowColor = UIColor.black.cgColor
-        containerView.layer.shadowOpacity = 0.22
+        containerView.layer.shadowOpacity = 0.15
         containerView.layer.shadowOffset = CGSize(width: 0, height: 4)
         containerView.layer.shadowRadius = 8
         
@@ -69,34 +84,34 @@ class MovieItemCollectionViewCell: UICollectionViewCell {
         moviePreviewImageView.clipsToBounds = true
         moviePreviewImageView.layer.cornerRadius = 14
         moviePreviewImageView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
-        moviePreviewImageView.backgroundColor = UIColor(red: 40/255, green: 40/255, blue: 45/255, alpha: 1.0)
+        moviePreviewImageView.backgroundColor = RMColor.surfaceBadge
         
         // Favorite button (Frosted circular look)
-        favoriteView.backgroundColor = UIColor.black.withAlphaComponent(0.45)
+        favoriteView.backgroundColor = RMColor.surfaceGlass
         favoriteView.layer.cornerRadius = 16
         favoriteView.clipsToBounds = true
         favoriteView.layer.borderWidth = 0.5
-        favoriteView.layer.borderColor = UIColor.white.withAlphaComponent(0.25).cgColor
+        favoriteView.layer.borderColor = RMColor.borderEmphasis.cgColor
         
-        movieFavoriteImageView.tintColor = .systemPink
+        movieFavoriteImageView.tintColor = RMColor.accentFavorite
         
         // Language badge (Pill style)
         if let langContainer = movieLanguageLabel.superview {
-            langContainer.backgroundColor = UIColor.black.withAlphaComponent(0.65)
+            langContainer.backgroundColor = RMColor.surfaceGlass
             langContainer.layer.cornerRadius = 6
             langContainer.clipsToBounds = true
             langContainer.layer.borderWidth = 0.5
-            langContainer.layer.borderColor = UIColor.white.withAlphaComponent(0.2).cgColor
+            langContainer.layer.borderColor = RMColor.borderSubtle.cgColor
         }
-        movieLanguageLabel.textColor = .white
+        movieLanguageLabel.textColor = RMColor.textPrimary
         movieLanguageLabel.font = .systemFont(ofSize: 10, weight: .bold)
         
         // Typography
-        movieTitleLabel.textColor = .white
+        movieTitleLabel.textColor = RMColor.textPrimary
         movieTitleLabel.font = .systemFont(ofSize: 13, weight: .semibold)
         
-        movieRateLabel.textColor = UIColor(red: 245/255, green: 197/255, blue: 24/255, alpha: 1.0)
-        movieRateLabel.font = .systemFont(ofSize: 11, weight: .medium)
+        movieRateLabel.textColor = RMColor.accentRating
+        movieRateLabel.font = .systemFont(ofSize: 11, weight: .semibold)
     }
     
     private func setupGesture() {

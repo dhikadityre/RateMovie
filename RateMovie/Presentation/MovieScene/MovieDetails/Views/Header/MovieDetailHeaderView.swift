@@ -15,7 +15,6 @@ class MovieDetailHeaderView: UIView {
     @IBOutlet weak var gradientOverlayView: UIView!
     
     private let gradientLayer = CAGradientLayer()
-    private let darkBackground = UIColor(red: 16/255, green: 17/255, blue: 21/255, alpha: 1.0)
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -32,6 +31,13 @@ class MovieDetailHeaderView: UIView {
         gradientLayer.frame = gradientOverlayView.bounds
     }
     
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        if #available(iOS 13.0, *), traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) {
+            updateGradientColors()
+        }
+    }
+    
     private func commonInit() {
         let bundle = Bundle(for: type(of: self))
         let nibName = String(describing: type(of: self))
@@ -44,15 +50,20 @@ class MovieDetailHeaderView: UIView {
         setupGradient()
     }
     
-    private func setupGradient() {
-        headerImageView.backgroundColor = UIColor(red: 26/255, green: 27/255, blue: 34/255, alpha: 1.0)
+    private func updateGradientColors() {
+        let baseColor = RMColor.backgroundPrimary
         gradientLayer.colors = [
             UIColor.clear.cgColor,
             UIColor.clear.cgColor,
-            darkBackground.withAlphaComponent(0.7).cgColor,
-            darkBackground.cgColor
+            baseColor.withAlphaComponent(0.65).cgColor,
+            baseColor.cgColor
         ]
-        gradientLayer.locations = [0.0, 0.40, 0.78, 1.0]
+    }
+    
+    private func setupGradient() {
+        headerImageView.backgroundColor = RMColor.surfaceBadge
+        gradientLayer.locations = [0.0, 0.35, 0.75, 1.0]
+        updateGradientColors()
         gradientOverlayView.layer.addSublayer(gradientLayer)
     }
 }

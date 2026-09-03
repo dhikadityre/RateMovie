@@ -13,6 +13,8 @@ class MovieDetailGenresView: UIView {
     @IBOutlet weak var genreScrollView: UIScrollView!
     @IBOutlet weak var genreStackView: UIStackView!
     
+    private var currentGenres: [String] = []
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         commonInit()
@@ -21,6 +23,13 @@ class MovieDetailGenresView: UIView {
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         commonInit()
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        if #available(iOS 13.0, *), traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) {
+            renderChips()
+        }
     }
     
     private func commonInit() {
@@ -37,11 +46,16 @@ class MovieDetailGenresView: UIView {
 
 extension MovieDetailGenresView {
     func setView(with viewModel: MovieDetailGenresViewModel) {
+        self.currentGenres = viewModel.genres
+        renderChips()
+    }
+    
+    private func renderChips() {
         genreStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
-        isHidden = viewModel.genres.isEmpty
-        genreScrollView.isHidden = viewModel.genres.isEmpty
+        isHidden = currentGenres.isEmpty
+        genreScrollView.isHidden = currentGenres.isEmpty
         
-        for genre in viewModel.genres {
+        for genre in currentGenres {
             let chip = makeGenreChip(title: genre)
             genreStackView.addArrangedSubview(chip)
         }
@@ -49,16 +63,16 @@ extension MovieDetailGenresView {
     
     private func makeGenreChip(title: String) -> UIView {
         let container = UIView()
-        container.backgroundColor = UIColor(red: 35/255, green: 37/255, blue: 46/255, alpha: 0.85)
+        container.backgroundColor = RMColor.surfaceCard
         container.layer.cornerRadius = 12
         container.layer.borderWidth = 0.5
-        container.layer.borderColor = UIColor.white.withAlphaComponent(0.15).cgColor
+        container.layer.borderColor = RMColor.borderSubtle.cgColor
         
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = title
-        label.textColor = .white
-        label.font = .systemFont(ofSize: 12, weight: .medium)
+        label.textColor = RMColor.textPrimary
+        label.font = .systemFont(ofSize: 12, weight: .semibold)
         container.addSubview(label)
         
         NSLayoutConstraint.activate([

@@ -28,24 +28,28 @@ class TabBarController: UITabBarController {
   }
   
   private func setupTabBarAppearance() {
-    tabBar.tintColor = .systemRed
-    tabBar.unselectedItemTintColor = .systemGray
+    tabBar.tintColor = RMColor.brandPrimary
+    tabBar.unselectedItemTintColor = RMColor.textTertiary
     
     if #available(iOS 15.0, *) {
       let appearance = UITabBarAppearance()
       appearance.configureWithDefaultBackground()
-      appearance.backgroundColor = .systemBackground
+      appearance.backgroundColor = RMColor.surfaceCard
+      
+      // Border top color
+      appearance.shadowColor = RMColor.borderSubtle
       
       tabBar.standardAppearance = appearance
       tabBar.scrollEdgeAppearance = appearance
     } else if #available(iOS 13.0, *) {
       let appearance = UITabBarAppearance()
       appearance.configureWithOpaqueBackground()
-      appearance.backgroundColor = .systemBackground
+      appearance.backgroundColor = RMColor.surfaceCard
+      appearance.shadowColor = RMColor.borderSubtle
       
       tabBar.standardAppearance = appearance
     } else {
-      tabBar.barTintColor = .white
+      tabBar.barTintColor = RMColor.surfaceCard
     }
   }
   

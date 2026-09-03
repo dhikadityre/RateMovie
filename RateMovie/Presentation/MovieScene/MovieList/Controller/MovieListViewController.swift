@@ -17,6 +17,9 @@ class MovieListViewController: UIViewController, RedNavBar {
 
 extension MovieListViewController {
     override var preferredStatusBarStyle: UIStatusBarStyle {
+        if #available(iOS 13.0, *) {
+            return traitCollection.userInterfaceStyle == .dark ? .lightContent : .darkContent
+        }
         return .lightContent
     }
     override func viewWillAppear(_ animated: Bool) {
@@ -26,6 +29,7 @@ extension MovieListViewController {
     }
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupTheme()
         configureCollectionView()
         verticalCollectionConfigure()
         bind()
@@ -46,6 +50,12 @@ extension MovieListViewController {
 }
 
 extension MovieListViewController {
+    private func setupTheme() {
+        view.backgroundColor = RMColor.backgroundPrimary
+        scrollView.backgroundColor = RMColor.backgroundPrimary
+        collectionView.backgroundColor = .clear
+    }
+    
     private func setupView () {
         navigationController?.navigationBar.prefersLargeTitles = true
         title = "Movie"

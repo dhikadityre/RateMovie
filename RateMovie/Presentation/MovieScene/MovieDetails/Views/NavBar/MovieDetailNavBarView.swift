@@ -43,7 +43,35 @@ class MovieDetailNavBarView: UIView {
         setupActions()
     }
     
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        if #available(iOS 13.0, *), traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) {
+            updateBlurEffect()
+            updateButtonStyles()
+        }
+    }
+    
+    private func updateBlurEffect() {
+        if #available(iOS 13.0, *) {
+            navBlurView.effect = UIBlurEffect(
+                style: traitCollection.userInterfaceStyle == .dark ? .systemMaterialDark : .systemMaterialLight
+            )
+        } else {
+            navBlurView.effect = UIBlurEffect(style: .dark)
+        }
+    }
+    
+    private func updateButtonStyles() {
+        [backButton, shareButton, favoriteButton].forEach { button in
+            button?.backgroundColor = RMColor.surfaceGlass
+            button?.layer.borderColor = RMColor.borderEmphasis.cgColor
+            button?.tintColor = RMColor.textPrimary
+        }
+    }
+    
     private func setupStyle() {
+        navTitleLabel.textColor = RMColor.textPrimary
+        updateBlurEffect()
         styleCircleButton(backButton, systemName: "chevron.left")
         styleCircleButton(shareButton, systemName: "square.and.arrow.up")
         styleCircleButton(favoriteButton, systemName: "bookmark")
@@ -52,14 +80,14 @@ class MovieDetailNavBarView: UIView {
     private func styleCircleButton(_ button: UIButton, systemName: String) {
         button.layer.cornerRadius = 20
         button.clipsToBounds = true
-        button.backgroundColor = UIColor.black.withAlphaComponent(0.35)
+        button.backgroundColor = RMColor.surfaceGlass
         button.layer.borderWidth = 0.5
-        button.layer.borderColor = UIColor.white.withAlphaComponent(0.25).cgColor
+        button.layer.borderColor = RMColor.borderEmphasis.cgColor
         
         let config = UIImage.SymbolConfiguration(pointSize: 15, weight: .semibold)
         let image = UIImage(systemName: systemName, withConfiguration: config)
         button.setImage(image, for: .normal)
-        button.tintColor = .white
+        button.tintColor = RMColor.textPrimary
     }
     
     private func setupActions() {
@@ -116,7 +144,7 @@ extension MovieDetailNavBarView {
         let config = UIImage.SymbolConfiguration(pointSize: 15, weight: .semibold)
         let imageName = isFavorite ? "bookmark.fill" : "bookmark"
         let image = UIImage(systemName: imageName, withConfiguration: config)
-        let tintColor: UIColor = isFavorite ? .systemPink : .white
+        let tintColor: UIColor = isFavorite ? RMColor.accentFavorite : RMColor.textPrimary
         
         if animated {
             UIView.transition(with: favoriteButton, duration: 0.25, options: .transitionCrossDissolve) {

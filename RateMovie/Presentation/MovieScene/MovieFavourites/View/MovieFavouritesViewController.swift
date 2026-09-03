@@ -14,6 +14,9 @@ class MovieFavouritesViewController: UIViewController, RedNavBar {
 
 extension MovieFavouritesViewController {
     override var preferredStatusBarStyle: UIStatusBarStyle {
+        if #available(iOS 13.0, *) {
+            return traitCollection.userInterfaceStyle == .dark ? .lightContent : .darkContent
+        }
         return .lightContent
     }
     override func viewWillAppear(_ animated: Bool) {
@@ -24,6 +27,8 @@ extension MovieFavouritesViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "Favorite"
+        view.backgroundColor = RMColor.backgroundPrimary
+        tableView.backgroundColor = RMColor.backgroundPrimary
         configureTableView()
         bind()
     }
