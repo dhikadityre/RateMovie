@@ -48,16 +48,16 @@ Salah satu pilar utama RateMovie adalah implementasi **Two-Way Interoperability*
 ```mermaid
 graph TD
     subgraph UIKit Environment
-        A[TabBarController<br/><i>UITabBarController</i>]
-        B[MovieDetailsViewController<br/><i>UIViewController</i>]
-        C[MovieFavouritesViewController<br/><i>UIViewController</i>]
-        D[TicketPassViewController<br/><i>UIViewController</i>]
+        A["TabBarController<br/>(UITabBarController)"]
+        B["MovieDetailsViewController<br/>(UIViewController)"]
+        C["MovieFavouritesViewController<br/>(UIViewController)"]
+        D["TicketPassViewController<br/>(UIViewController)"]
     end
 
     subgraph SwiftUI Views & Components
-        E[UserProfileView<br/><i>View</i>]
-        F[SeatBookingView<br/><i>View</i>]
-        G[InteractiveRatingWidgetView<br/><i>View (Component)</i>]
+        E["UserProfileView<br/>(SwiftUI View)"]
+        F["SeatBookingView<br/>(SwiftUI View)"]
+        G["InteractiveRatingWidgetView<br/>(SwiftUI Component)"]
     end
 
     A -->|1. Root Tab Hosting| E
@@ -250,15 +250,15 @@ RateMovie/
 ```mermaid
 sequenceDiagram
     autonumber
-    actor User
-    participant TabBar as TabBarController (UIKit)
-    participant ListVC as MovieListVC (UIKit)
-    participant DetailVC as MovieDetailsVC (UIKit)
-    participant RatingWidget as RatingWidget (SwiftUI)
-    participant SeatBooking as SeatBookingView (SwiftUI)
-    participant TicketVC as TicketPassVC (UIKit)
-    participant CoreData as Core Data Storage
-    participant ProfileView as UserProfileView (SwiftUI)
+    actor User as "User"
+    participant TabBar as "TabBarController (UIKit)"
+    participant ListVC as "MovieListVC (UIKit)"
+    participant DetailVC as "MovieDetailsVC (UIKit)"
+    participant RatingWidget as "RatingWidget (SwiftUI)"
+    participant SeatBooking as "SeatBookingView (SwiftUI)"
+    participant TicketVC as "TicketPassVC (UIKit)"
+    participant CoreData as "Core Data Storage"
+    participant ProfileView as "UserProfileView (SwiftUI)"
 
     User->>TabBar: Buka Aplikasi
     TabBar->>ListVC: Tampilkan Tab Movie List
