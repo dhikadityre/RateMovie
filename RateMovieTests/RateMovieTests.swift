@@ -561,6 +561,31 @@ final class RateMovieTests: XCTestCase {
         
         waitForExpectations(timeout: 3.0, handler: nil)
     }
+
+    func testTabBarControllerUserProfileNavigationToFavorites() {
+        let tabBar = TabBarController()
+        tabBar.loadViewIfNeeded()
+        
+        guard let navControllers = tabBar.viewControllers as? [UINavigationController],
+              navControllers.count >= 2 else {
+            XCTFail("TabBarController should have at least 2 navigation controllers")
+            return
+        }
+        
+        let profileNav = navControllers[1]
+        guard let profileHosting = profileNav.viewControllers.first as? UIHostingController<UserProfileView> else {
+            XCTFail("Tab 2 root should be UIHostingController<UserProfileView>")
+            return
+        }
+        
+        let profileViewModel = profileHosting.rootView.viewModel
+        XCTAssertNotNil(profileViewModel.onNavigateToFavorites, "onNavigateToFavorites closure should be configured")
+        
+        profileViewModel.didTapFavorites()
+        
+        XCTAssertEqual(profileNav.viewControllers.count, 2)
+        XCTAssertTrue(profileNav.viewControllers.last is MovieFavouritesViewController, "Top view controller should be MovieFavouritesViewController")
+    }
 }
 
 
