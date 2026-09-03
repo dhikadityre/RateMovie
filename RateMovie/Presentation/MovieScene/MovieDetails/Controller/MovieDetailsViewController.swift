@@ -6,11 +6,13 @@
 //
 
 import UIKit
+import SwiftUI
 
 class MovieDetailsViewController: UIViewController {
     
     // MARK: - IBOutlets (Modular Custom Views)
     @IBOutlet weak var scrollView: UIScrollView!
+    @IBOutlet weak var contentStackView: UIStackView!
     @IBOutlet weak var navBarView: MovieDetailNavBarView!
     @IBOutlet weak var headerView: MovieDetailHeaderView!
     @IBOutlet weak var infoView: MovieDetailInfoView!
@@ -18,8 +20,44 @@ class MovieDetailsViewController: UIViewController {
     @IBOutlet weak var storylineView: MovieDetailStorylineView!
     @IBOutlet weak var similarView: MovieDetailSimilarView!
     
+    // MARK: - SwiftUI Embedded Component
+    private(set) var ratingHostingController: UIHostingController<InteractiveRatingWidgetView>?
+    private(set) var ratingViewModel = InteractiveRatingWidgetViewModel()
+    
+    // MARK: - Booking UI Components
+    private(set) var bottomBookingBar: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = RMColor.surfaceCard
+        return view
+    }()
+    
+    private(set) var bookTicketButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitle("Book Ticket", for: .normal)
+        button.titleLabel?.font = .systemFont(ofSize: 16, weight: .bold)
+        button.setTitleColor(.white, for: .normal)
+        button.backgroundColor = RMColor.brandPrimary
+        button.layer.cornerRadius = 16
+        button.layer.masksToBounds = true
+        
+        if #available(iOS 13.0, *) {
+            let config = UIImage.SymbolConfiguration(pointSize: 15, weight: .bold)
+            let image = UIImage(systemName: "ticket.fill", withConfiguration: config)
+            button.setImage(image, for: .normal)
+            button.tintColor = .white
+            button.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 8)
+            button.titleEdgeInsets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 0)
+        }
+        return button
+    }()
+    
     // MARK: - ViewModel
     var viewModel: MovieDetailsViewModel?
+    
+    // MARK: - Persistence Manager
+    public var ticketPersistenceManager: TicketPersistenceManagerProtocol = TicketPersistenceManager.shared
 }
 
 // MARK: - Lifecycle
@@ -56,7 +94,64 @@ extension MovieDetailsViewController {
         view.backgroundColor = RMColor.backgroundPrimary
         scrollView.backgroundColor = RMColor.backgroundPrimary
         scrollView.delegate = self
+        setupRatingWidget()
+        setupBookingBar()
         updateComponents()
+    }
+    
+    private func setupRatingWidget() {
+        guard let contentStackView = contentStackView else { return }
+        
+        let ratingVM = InteractiveRatingWidgetViewModel(
+            movieTitle: viewModel?.title,
+            onRatingSubmitted: { [weak self] _ in
+                self?.snakeBarGreen(message: "Thank you for rating!")
+            }
+        )
+        self.ratingViewModel = ratingVM
+        
+        let hostingController = UIHostingController(rootView: InteractiveRatingWidgetView(viewModel: ratingVM))
+        hostingController.view.backgroundColor = .clear
+        
+        addChild(hostingController)
+        
+        if let similarIndex = contentStackView.arrangedSubviews.firstIndex(of: similarView) {
+            contentStackView.insertArrangedSubview(hostingController.view, at: similarIndex)
+        } else {
+            contentStackView.addArrangedSubview(hostingController.view)
+        }
+        
+        hostingController.didMove(toParent: self)
+        self.ratingHostingController = hostingController
+    }
+    
+    private func setupBookingBar() {
+        view.addSubview(bottomBookingBar)
+        bottomBookingBar.addSubview(bookTicketButton)
+        
+        bottomBookingBar.layer.shadowColor = UIColor.black.cgColor
+        bottomBookingBar.layer.shadowOpacity = 0.08
+        bottomBookingBar.layer.shadowOffset = CGSize(width: 0, height: -4)
+        bottomBookingBar.layer.shadowRadius = 12
+        
+        NSLayoutConstraint.activate([
+            bottomBookingBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            bottomBookingBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            bottomBookingBar.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            
+            bookTicketButton.leadingAnchor.constraint(equalTo: bottomBookingBar.leadingAnchor, constant: 20),
+            bookTicketButton.trailingAnchor.constraint(equalTo: bottomBookingBar.trailingAnchor, constant: -20),
+            bookTicketButton.topAnchor.constraint(equalTo: bottomBookingBar.topAnchor, constant: 12),
+            bookTicketButton.bottomAnchor.constraint(equalTo: bottomBookingBar.safeAreaLayoutGuide.bottomAnchor, constant: -12),
+            bookTicketButton.heightAnchor.constraint(equalToConstant: 50)
+        ])
+        
+        scrollView.contentInset.bottom = 90
+        if #available(iOS 13.0, *) {
+            scrollView.verticalScrollIndicatorInsets.bottom = 90
+        }
+        
+        bookTicketButton.addTarget(self, action: #selector(didTapBookTicket), for: .touchUpInside)
     }
     
     private func setupCallbacks() {
@@ -169,6 +264,50 @@ extension MovieDetailsViewController {
         )
         detailVC.viewModel = vm
         navigationController?.pushViewController(detailVC, animated: true)
+    }
+    
+    @objc func didTapBookTicket() {
+        navigateToSeatBooking()
+    }
+    
+    func navigateToSeatBooking() {
+        let movieId = viewModel?.getMovieId()
+        let movieTitle = viewModel?.title ?? "Movie Details"
+        
+        let bookingVM = SeatBookingViewModel(
+            movieId: movieId,
+            movieTitle: movieTitle,
+            onConfirmBooking: { [weak self] summary in
+                self?.handleBookingConfirmation(summary: summary)
+            }
+        )
+        let bookingView = SeatBookingView(viewModel: bookingVM)
+        let hostingController = UIHostingController(rootView: bookingView)
+        hostingController.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(hostingController, animated: true)
+    }
+    
+    public func handleBookingConfirmation(summary: SeatBookingSummary, completion: ((Result<TicketModel, Error>) -> Void)? = nil) {
+        let ticketModel = summary.toTicketModel()
+        ticketPersistenceManager.saveTicket(ticketModel) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let savedTicket):
+                let ticketPassVC = TicketPassViewController(summary: summary, onDone: { [weak self] in
+                    guard let self = self else { return }
+                    self.navigationController?.popToViewController(self, animated: true)
+                })
+                self.navigationController?.pushViewController(ticketPassVC, animated: true)
+                completion?(.success(savedTicket))
+            case .failure(let error):
+                let ticketPassVC = TicketPassViewController(summary: summary, onDone: { [weak self] in
+                    guard let self = self else { return }
+                    self.navigationController?.popToViewController(self, animated: true)
+                })
+                self.navigationController?.pushViewController(ticketPassVC, animated: true)
+                completion?(.failure(error))
+            }
+        }
     }
 }
 

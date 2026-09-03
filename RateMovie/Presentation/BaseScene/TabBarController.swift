@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import SwiftUI
 
 class TabBarController: UITabBarController {
   override func viewDidLoad() {
@@ -23,7 +24,7 @@ class TabBarController: UITabBarController {
   func createBaseTabBar() {
     self.viewControllers = [
       makeNavigation(viewController: createMovieListTab()),
-      makeNavigation(viewController: createMovieFavouritesTab())
+      makeNavigation(viewController: createUserProfileTab())
     ]
   }
   
@@ -54,6 +55,10 @@ class TabBarController: UITabBarController {
   }
   
   func moveToFavoritesController() {
+    self.selectedIndex = 1
+  }
+  
+  func moveToProfileController() {
     self.selectedIndex = 1
   }
 }
@@ -91,7 +96,23 @@ extension TabBarController {
     return movieListController
   }
   
-  private func createMovieFavouritesTab() -> UIViewController {
+  func createUserProfileTab(profileViewModel: UserProfileViewModel = UserProfileViewModel()) -> UIViewController {
+    let userProfileView = UserProfileView(viewModel: profileViewModel)
+    let profileHostingController = UIHostingController(rootView: userProfileView)
+    
+    profileViewModel.onNavigateToFavorites = { [weak self, weak profileHostingController] in
+      guard let self = self else { return }
+      let movieFavouritesController = self.createMovieFavouritesViewController()
+      profileHostingController?.navigationController?.pushViewController(movieFavouritesController, animated: true)
+    }
+    
+    profileHostingController.tabBarItem.title = "Profile"
+    profileHostingController.tabBarItem.image = UIImage(systemName: "person")
+    profileHostingController.tabBarItem.selectedImage = UIImage(systemName: "person.fill")
+    return profileHostingController
+  }
+  
+  func createMovieFavouritesViewController() -> MovieFavouritesViewController {
     let movieFavouritesController = MovieFavouritesViewController()
     movieFavouritesController.viewModel = DefaultMovieFavouritesViewModel(
       useCase: DefaultMovieFavoritesUseCase(
@@ -101,6 +122,11 @@ extension TabBarController {
         )
       )
     )
+    return movieFavouritesController
+  }
+  
+  private func createMovieFavouritesTab() -> UIViewController {
+    let movieFavouritesController = createMovieFavouritesViewController()
     movieFavouritesController.tabBarItem.title = "Favorite"
     movieFavouritesController.tabBarItem.image = UIImage(systemName: "star")
     movieFavouritesController.tabBarItem.selectedImage = UIImage(systemName: "star.fill")

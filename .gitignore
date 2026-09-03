@@ -157,3 +157,6 @@ iOSInjectionProject/
 
 # End of 
 https://www.toptal.com/developers/gitignore/api/swift,cocoapods,xcode
+
+RateMovie/log-security/
+log-security/

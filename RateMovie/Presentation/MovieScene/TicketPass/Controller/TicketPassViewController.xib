@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21225" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_0" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21207"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="TicketPassViewController" customModule="RateMovie" customModuleProvider="target">
+            <connections>
+                <outlet property="cinemaHallLabel" destination="hall-lbl-001" id="out-hall-lbl"/>
+                <outlet property="contentView" destination="content-view-01" id="out-content-view"/>
+                <outlet property="dividerView" destination="div-view-001" id="out-divider-view"/>
+                <outlet property="doneButton" destination="done-btn-001" id="out-done-btn"/>
+                <outlet property="hallBadgeView" destination="hall-bdg-001" id="out-hall-bdg"/>
+                <outlet property="headerSubtitleLabel" destination="hdr-sub-001" id="out-hdr-sub"/>
+                <outlet property="headerTitleLabel" destination="hdr-ttl-001" id="out-hdr-ttl"/>
+                <outlet property="movieTitleLabel" destination="mov-ttl-001" id="out-mov-ttl"/>
+                <outlet property="priceLabel" destination="prc-lbl-001" id="out-prc-lbl"/>
+                <outlet property="qrCodeLabel" destination="qr-txt-001" id="out-qr-txt"/>
+                <outlet property="qrContainerView" destination="qr-cnt-001" id="out-qr-cnt"/>
+                <outlet property="qrImageView" destination="qr-img-001" id="out-qr-img"/>
+                <outlet property="scrollView" destination="scroll-view-01" id="out-scroll-view"/>
+                <outlet property="seatsLabel" destination="set-lbl-001" id="out-set-lbl"/>
+                <outlet property="showtimeLabel" destination="shw-lbl-001" id="out-shw-lbl"/>
+                <outlet property="successBadgeView" destination="scs-bdg-001" id="out-scs-bdg"/>
+                <outlet property="successIconImageView" destination="scs-img-001" id="out-scs-img"/>
+                <outlet property="ticketCardView" destination="tkt-crd-001" id="out-tkt-crd"/>
+                <outlet property="ticketIdLabel" destination="tid-lbl-001" id="out-tid-lbl"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="scroll-view-01">
+                    <rect key="frame" x="0.0" y="47" width="390" height="763"/>
+                    <subviews>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="content-view-01" userLabel="ContentView">
+                            <rect key="frame" x="0.0" y="0.0" width="390" height="750"/>
+                            <subviews>
+                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="scs-bdg-001" userLabel="SuccessBadgeView">
+                                    <rect key="frame" x="163" y="16" width="64" height="64"/>
+                                    <subviews>
+                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="checkmark.seal.fill" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="scs-img-001">
+                                            <rect key="frame" x="14" y="13.333333333333332" width="36" height="37.333333333333343"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="36" id="scs-img-h"/>
+                                                <constraint firstAttribute="width" constant="36" id="scs-img-w"/>
+                                            </constraints>
+                                        </imageView>
+                                    </subviews>
+                                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                    <constraints>
+                                        <constraint firstItem="scs-img-001" firstAttribute="centerX" secondItem="scs-bdg-001" secondAttribute="centerX" id="scs-img-cx"/>
+                                        <constraint firstItem="scs-img-001" firstAttribute="centerY" secondItem="scs-bdg-001" secondAttribute="centerY" id="scs-img-cy"/>
+                                        <constraint firstAttribute="height" constant="64" id="scs-bdg-h"/>
+                                        <constraint firstAttribute="width" constant="64" id="scs-bdg-w"/>
+                                    </constraints>
+                                </view>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Booking Confirmed!" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hdr-ttl-001">
+                                    <rect key="frame" x="24" y="92" width="342" height="29"/>
+                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="24"/>
+                                    <nil key="textColor"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Present this digital pass at the cinema entrance" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hdr-sub-001">
+                                    <rect key="frame" x="24" y="125" width="342" height="17"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                    <nil key="textColor"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tkt-crd-001" userLabel="TicketCardView">
+                                    <rect key="frame" x="20" y="166" width="350" height="476"/>
+                                    <subviews>
+                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hall-bdg-001" userLabel="HallBadgeView">
+                                            <rect key="frame" x="84" y="20" width="182" height="26"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="HALL 1 • DOLBY ATMOS" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hall-lbl-001">
+                                                    <rect key="frame" x="12" y="4" width="158" height="18"/>
+                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="12"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                            <constraints>
+                                                <constraint firstAttribute="bottom" secondItem="hall-lbl-001" secondAttribute="bottom" constant="4" id="hbd-b"/>
+                                                <constraint firstItem="hall-lbl-001" firstAttribute="leading" secondItem="hall-bdg-001" secondAttribute="leading" constant="12" id="hbd-l"/>
+                                                <constraint firstAttribute="trailing" secondItem="hall-lbl-001" secondAttribute="trailing" constant="12" id="hbd-r"/>
+                                                <constraint firstItem="hall-lbl-001" firstAttribute="top" secondItem="hall-bdg-001" secondAttribute="top" constant="4" id="hbd-t"/>
+                                            </constraints>
+                                        </view>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Movie Title" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mov-ttl-001">
+                                            <rect key="frame" x="20" y="58" width="310" height="26.333333333333329"/>
+                                            <fontDescription key="fontDescription" type="system" weight="heavy" pointSize="22"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="top" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="det-stk-001">
+                                            <rect key="frame" x="20" y="104.33333333333331" width="310" height="107.33333333333331"/>
+                                            <subviews>
+                                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" spacing="14" translatesAutoresizingMaskIntoConstraints="NO" id="col-lft-001">
+                                                    <rect key="frame" x="0.0" y="0.0" width="147" height="85.333333333333329"/>
+                                                    <subviews>
+                                                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="itm-shw-001">
+                                                            <rect key="frame" x="0.0" y="0.0" width="145.33333333333334" height="35.666666666666664"/>
+                                                            <subviews>
+                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="SHOWTIME" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="shw-cap-001">
+                                                                    <rect key="frame" x="0.0" y="0.0" width="65.333333333333329" height="14.666666666666666"/>
+                                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="11"/>
+                                                                    <color key="textColor" systemColor="secondaryLabelColor"/>
+                                                                    <nil key="highlightedColor"/>
+                                                                </label>
+                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Fri, 04 Sep • 19:30" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="shw-lbl-001">
+                                                                    <rect key="frame" x="0.0" y="18.666666666666686" width="124" height="17"/>
+                                                                    <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="14"/>
+                                                                    <nil key="textColor"/>
+                                                                    <nil key="highlightedColor"/>
+                                                                </label>
+                                                            </subviews>
+                                                        </stackView>
+                                                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="itm-tid-001">
+                                                            <rect key="frame" x="0.0" y="49.666666666666686" width="107.66666666666667" height="35.666666666666657"/>
+                                                            <subviews>
+                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="BOOKING ID" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tid-cap-001">
+                                                                    <rect key="frame" x="0.0" y="0.0" width="68.666666666666671" height="14.666666666666666"/>
+                                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="11"/>
+                                                                    <color key="textColor" systemColor="secondaryLabelColor"/>
+                                                                    <nil key="highlightedColor"/>
+                                                                </label>
+                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="TICKET-1234" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tid-lbl-001">
+                                                                    <rect key="frame" x="0.0" y="18.666666666666686" width="87" height="17"/>
+                                                                    <fontDescription key="fontDescription" name="Menlo-Regular" family="Menlo" pointSize="13"/>
+                                                                    <nil key="textColor"/>
+                                                                    <nil key="highlightedColor"/>
+                                                                </label>
+                                                            </subviews>
+                                                        </stackView>
+                                                    </subviews>
+                                                </stackView>
+                                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="bottom" spacing="14" translatesAutoresizingMaskIntoConstraints="NO" id="col-rgt-001">
+                                                    <rect key="frame" x="163" y="0.0" width="147" height="87"/>
+                                                    <subviews>
+                                                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="bottom" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="itm-set-001">
+                                                            <rect key="frame" x="84" y="0.0" width="63" height="35.666666666666664"/>
+                                                            <subviews>
+                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="SEATS" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="set-cap-001">
+                                                                    <rect key="frame" x="27.666666666666686" y="0.0" width="35.333333333333343" height="14.666666666666666"/>
+                                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="11"/>
+                                                                    <color key="textColor" systemColor="secondaryLabelColor"/>
+                                                                    <nil key="highlightedColor"/>
+                                                                </label>
+                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="B4, B5" textAlignment="right" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="set-lbl-001">
+                                                                    <rect key="frame" x="20.333333333333314" y="18.666666666666686" width="42.666666666666657" height="17"/>
+                                                                    <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="14"/>
+                                                                    <nil key="textColor"/>
+                                                                    <nil key="highlightedColor"/>
+                                                                </label>
+                                                            </subviews>
+                                                        </stackView>
+                                                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="bottom" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="itm-prc-001">
+                                                            <rect key="frame" x="65" y="49.666666666666686" width="82" height="37.333333333333343"/>
+                                                            <subviews>
+                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="TOTAL PRICE" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="prc-cap-001">
+                                                                    <rect key="frame" x="11.333333333333314" y="0.0" width="70.666666666666671" height="14.666666666666666"/>
+                                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="11"/>
+                                                                    <color key="textColor" systemColor="secondaryLabelColor"/>
+                                                                    <nil key="highlightedColor"/>
+                                                                </label>
+                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Rp 100.000" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="prc-lbl-001">
+                                                                    <rect key="frame" x="0.0" y="18.666666666666686" width="82" height="18.666666666666671"/>
+                                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                                                    <nil key="textColor"/>
+                                                                    <nil key="highlightedColor"/>
+                                                                </label>
+                                                            </subviews>
+                                                        </stackView>
+                                                    </subviews>
+                                                </stackView>
+                                            </subviews>
+                                        </stackView>
+                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="div-view-001" userLabel="DividerView">
+                                            <rect key="frame" x="16" y="231.66666666666669" width="318" height="1"/>
+                                            <color key="backgroundColor" systemColor="separatorColor"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="1" id="div-h"/>
+                                            </constraints>
+                                        </view>
+                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qr-cnt-001" userLabel="QRContainerView">
+                                            <rect key="frame" x="105" y="252.66666666666669" width="140" height="140"/>
+                                            <subviews>
+                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="qr-img-001">
+                                                    <rect key="frame" x="8" y="8" width="124" height="124"/>
+                                                </imageView>
+                                            </subviews>
+                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <constraints>
+                                                <constraint firstAttribute="trailing" secondItem="qr-img-001" secondAttribute="trailing" constant="8" id="qri-r"/>
+                                                <constraint firstItem="qr-img-001" firstAttribute="leading" secondItem="qr-cnt-001" secondAttribute="leading" constant="8" id="qri-l"/>
+                                                <constraint firstAttribute="bottom" secondItem="qr-img-001" secondAttribute="bottom" constant="8" id="qri-b"/>
+                                                <constraint firstItem="qr-img-001" firstAttribute="top" secondItem="qr-cnt-001" secondAttribute="top" constant="8" id="qri-t"/>
+                                                <constraint firstAttribute="height" constant="140" id="qrc-h"/>
+                                                <constraint firstAttribute="width" constant="140" id="qrc-w"/>
+                                            </constraints>
+                                        </view>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="TICKET-RM8829X9" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qr-txt-001">
+                                            <rect key="frame" x="20" y="400.66666666666663" width="310" height="14.333333333333314"/>
+                                            <fontDescription key="fontDescription" name="Menlo-Bold" family="Menlo" pointSize="12"/>
+                                            <color key="textColor" systemColor="secondaryLabelColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                    <constraints>
+                                        <constraint firstAttribute="trailing" secondItem="qr-txt-001" secondAttribute="trailing" constant="20" id="qrt-r"/>
+                                        <constraint firstItem="qr-cnt-001" firstAttribute="centerX" secondItem="tkt-crd-001" secondAttribute="centerX" id="qrc-cx"/>
+                                        <constraint firstItem="mov-ttl-001" firstAttribute="leading" secondItem="tkt-crd-001" secondAttribute="leading" constant="20" id="mvt-l"/>
+                                        <constraint firstAttribute="trailing" secondItem="div-view-001" secondAttribute="trailing" constant="16" id="div-r"/>
+                                        <constraint firstItem="div-view-001" firstAttribute="top" secondItem="det-stk-001" secondAttribute="bottom" constant="20" id="div-t"/>
+                                        <constraint firstAttribute="bottom" secondItem="qr-txt-001" secondAttribute="bottom" constant="20" id="qrt-b"/>
+                                        <constraint firstItem="hall-bdg-001" firstAttribute="top" secondItem="tkt-crd-001" secondAttribute="top" constant="20" id="hbd-top"/>
+                                        <constraint firstItem="div-view-001" firstAttribute="leading" secondItem="tkt-crd-001" secondAttribute="leading" constant="16" id="div-l"/>
+                                        <constraint firstItem="qr-txt-001" firstAttribute="top" secondItem="qr-cnt-001" secondAttribute="bottom" constant="8" id="qrt-t"/>
+                                        <constraint firstItem="det-stk-001" firstAttribute="leading" secondItem="tkt-crd-001" secondAttribute="leading" constant="20" id="det-l"/>
+                                        <constraint firstItem="qr-cnt-001" firstAttribute="top" secondItem="div-view-001" secondAttribute="bottom" constant="20" id="qrc-t"/>
+                                        <constraint firstItem="hall-bdg-001" firstAttribute="centerX" secondItem="tkt-crd-001" secondAttribute="centerX" id="hbd-cx"/>
+                                        <constraint firstItem="mov-ttl-001" firstAttribute="top" secondItem="hall-bdg-001" secondAttribute="bottom" constant="12" id="mvt-t"/>
+                                        <constraint firstAttribute="trailing" secondItem="det-stk-001" secondAttribute="trailing" constant="20" id="det-r"/>
+                                        <constraint firstAttribute="trailing" secondItem="mov-ttl-001" secondAttribute="trailing" constant="20" id="mvt-r"/>
+                                        <constraint firstItem="det-stk-001" firstAttribute="top" secondItem="mov-ttl-001" secondAttribute="bottom" constant="20" id="det-t"/>
+                                    </constraints>
+                                </view>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="done-btn-001">
+                                    <rect key="frame" x="20" y="666" width="350" height="52"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="52" id="dnb-h"/>
+                                    </constraints>
+                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="16"/>
+                                    <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                    <state key="normal" title="Done">
+                                        <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    </state>
+                                    <connections>
+                                        <action selector="didTapDone:" destination="-1" eventType="touchUpInside" id="act-done-tap"/>
+                                    </connections>
+                                </button>
+                            </subviews>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <constraints>
+                                <constraint firstItem="hdr-ttl-001" firstAttribute="top" secondItem="scs-bdg-001" secondAttribute="bottom" constant="12" id="htt-t"/>
+                                <constraint firstItem="hdr-ttl-001" firstAttribute="leading" secondItem="content-view-01" secondAttribute="leading" constant="24" id="htt-l"/>
+                                <constraint firstAttribute="trailing" secondItem="hdr-ttl-001" secondAttribute="trailing" constant="24" id="htt-r"/>
+                                <constraint firstItem="hdr-sub-001" firstAttribute="top" secondItem="hdr-ttl-001" secondAttribute="bottom" constant="4" id="hts-t"/>
+                                <constraint firstItem="hdr-sub-001" firstAttribute="leading" secondItem="content-view-01" secondAttribute="leading" constant="24" id="hts-l"/>
+                                <constraint firstAttribute="trailing" secondItem="hdr-sub-001" secondAttribute="trailing" constant="24" id="hts-r"/>
+                                <constraint firstItem="scs-bdg-001" firstAttribute="centerX" secondItem="content-view-01" secondAttribute="centerX" id="sbd-cx"/>
+                                <constraint firstItem="scs-bdg-001" firstAttribute="top" secondItem="content-view-01" secondAttribute="top" constant="16" id="sbd-t"/>
+                                <constraint firstItem="tkt-crd-001" firstAttribute="top" secondItem="hdr-sub-001" secondAttribute="bottom" constant="24" id="tkc-t"/>
+                                <constraint firstItem="tkt-crd-001" firstAttribute="leading" secondItem="content-view-01" secondAttribute="leading" constant="20" id="tkc-l"/>
+                                <constraint firstAttribute="trailing" secondItem="tkt-crd-001" secondAttribute="trailing" constant="20" id="tkc-r"/>
+                                <constraint firstItem="done-btn-001" firstAttribute="leading" secondItem="content-view-01" secondAttribute="leading" constant="20" id="dnb-l"/>
+                                <constraint firstItem="done-btn-001" firstAttribute="top" secondItem="tkt-crd-001" secondAttribute="bottom" constant="24" id="dnb-t"/>
+                                <constraint firstAttribute="trailing" secondItem="done-btn-001" secondAttribute="trailing" constant="20" id="dnb-r"/>
+                                <constraint firstAttribute="bottom" secondItem="done-btn-001" secondAttribute="bottom" constant="24" id="dnb-b"/>
+                            </constraints>
+                        </view>
+                    </subviews>
+                    <constraints>
+                        <constraint firstItem="content-view-01" firstAttribute="top" secondItem="scroll-view-01" secondAttribute="top" id="scv-t"/>
+                        <constraint firstItem="content-view-01" firstAttribute="leading" secondItem="scroll-view-01" secondAttribute="leading" id="scv-l"/>
+                        <constraint firstAttribute="trailing" secondItem="content-view-01" secondAttribute="trailing" id="scv-r"/>
+                        <constraint firstAttribute="bottom" secondItem="content-view-01" secondAttribute="bottom" id="scv-b"/>
+                        <constraint firstItem="content-view-01" firstAttribute="width" secondItem="scroll-view-01" secondAttribute="width" id="scv-w"/>
+                    </constraints>
+                </scrollView>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
+            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+            <constraints>
+                <constraint firstItem="scroll-view-01" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="msc-l"/>
+                <constraint firstItem="scroll-view-01" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="msc-t"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="scroll-view-01" secondAttribute="trailing" id="msc-r"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="scroll-view-01" secondAttribute="bottom" id="msc-b"/>
+            </constraints>
+            <point key="canvasLocation" x="136.92307692307691" y="20.616113744075829"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="checkmark.seal.fill" catalog="system" width="128" height="124"/>
+        <systemColor name="secondaryLabelColor">
+            <color red="0.23529411764705882" green="0.23529411764705882" blue="0.2608695652173913" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="separatorColor">
+            <color red="0.23529411764705882" green="0.23529411764705882" blue="0.2608695652173913" alpha="0.28999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>
