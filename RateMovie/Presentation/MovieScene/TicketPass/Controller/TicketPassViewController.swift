@@ -41,6 +41,10 @@ public class TicketPassViewController: UIViewController {
     // Actions
     @IBOutlet public weak var doneButton: UIButton!
     
+    // MARK: - Animation Properties
+    public private(set) var shimmerLayer: CAGradientLayer?
+    public var hasAnimatedEntry: Bool = false
+    
     // MARK: - Initializers
     public init(viewModel: TicketPassViewModel) {
         self.viewModel = viewModel
@@ -77,6 +81,21 @@ public class TicketPassViewController: UIViewController {
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.setNavigationBarHidden(true, animated: animated)
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        if !hasAnimatedEntry {
+            hasAnimatedEntry = true
+            perform3DCardFlipAnimation()
+        } else {
+            startShimmerAnimation()
+        }
+    }
+    
+    public override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        updateShimmerFrame()
     }
     
     // MARK: - UI Styling
@@ -131,6 +150,9 @@ public class TicketPassViewController: UIViewController {
         doneButton.setTitleColor(.white, for: .normal)
         doneButton.layer.cornerRadius = 16
         doneButton.layer.masksToBounds = true
+        
+        // Setup Core Animation Layers
+        setupShimmerAnimation()
     }
     
     // MARK: - Data Configuration
@@ -144,6 +166,107 @@ public class TicketPassViewController: UIViewController {
         qrCodeLabel?.text = viewModel.qrCodeString
         
         qrImageView?.image = viewModel.generateQRCodeImage()
+    }
+    
+    // MARK: - Core Animation (Shimmer & 3D Flip)
+    
+    /// Setup CAGradientLayer for shimmer effect on the ticket card
+    public func setupShimmerAnimation() {
+        guard shimmerLayer == nil, let ticketCardView = ticketCardView else { return }
+        
+        let gradient = CAGradientLayer()
+        gradient.name = "ticketCardShimmerLayer"
+        gradient.colors = [
+            UIColor.white.withAlphaComponent(0.0).cgColor,
+            UIColor.white.withAlphaComponent(0.18).cgColor,
+            UIColor.white.withAlphaComponent(0.0).cgColor
+        ]
+        gradient.locations = [0.0, 0.5, 1.0]
+        gradient.startPoint = CGPoint(x: 0.0, y: 0.2)
+        gradient.endPoint = CGPoint(x: 1.0, y: 0.8)
+        gradient.cornerRadius = 20
+        gradient.masksToBounds = true
+        
+        ticketCardView.layer.insertSublayer(gradient, at: 0)
+        self.shimmerLayer = gradient
+    }
+    
+    /// Update shimmer layer frame matching ticket card bounds
+    public func updateShimmerFrame() {
+        guard let ticketCardView = ticketCardView, let shimmerLayer = shimmerLayer else { return }
+        shimmerLayer.frame = ticketCardView.bounds
+    }
+    
+    /// Start continuous CABasicAnimation shimmer effect
+    public func startShimmerAnimation() {
+        guard let shimmerLayer = shimmerLayer else { return }
+        shimmerLayer.removeAnimation(forKey: "shimmerAnimation")
+        
+        let shimmerAnimation = CABasicAnimation(keyPath: "locations")
+        shimmerAnimation.fromValue = [-1.0, -0.5, 0.0]
+        shimmerAnimation.toValue = [1.0, 1.5, 2.0]
+        shimmerAnimation.duration = 2.5
+        shimmerAnimation.repeatCount = .infinity
+        shimmerAnimation.isRemovedOnCompletion = false
+        shimmerAnimation.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+        
+        shimmerLayer.add(shimmerAnimation, forKey: "shimmerAnimation")
+    }
+    
+    /// Stop continuous shimmer animation
+    public func stopShimmerAnimation() {
+        shimmerLayer?.removeAnimation(forKey: "shimmerAnimation")
+    }
+    
+    /// Perform 3D Card Flip entrance animation using CATransform3D
+    public func perform3DCardFlipAnimation(completion: (() -> Void)? = nil) {
+        guard let ticketCardView = ticketCardView else {
+            completion?()
+            return
+        }
+        
+        // 3D Perspective setup
+        var perspectiveTransform = CATransform3DIdentity
+        perspectiveTransform.m34 = -1.0 / 600.0 // Perspective depth
+        
+        // Rotate 90 degrees around Y axis with slight perspective
+        let startTransform = CATransform3DRotate(perspectiveTransform, CGFloat.pi / 2, 0.0, 1.0, 0.0)
+        let endTransform = CATransform3DIdentity
+        
+        // 3D Flip Transform Animation
+        let flipAnimation = CABasicAnimation(keyPath: "transform")
+        flipAnimation.fromValue = NSValue(caTransform3D: startTransform)
+        flipAnimation.toValue = NSValue(caTransform3D: endTransform)
+        flipAnimation.duration = 0.65
+        flipAnimation.timingFunction = CAMediaTimingFunction(controlPoints: 0.16, 1.0, 0.3, 1.0)
+        flipAnimation.fillMode = .forwards
+        flipAnimation.isRemovedOnCompletion = false
+        
+        // Opacity Animation
+        let opacityAnimation = CABasicAnimation(keyPath: "opacity")
+        opacityAnimation.fromValue = 0.0
+        opacityAnimation.toValue = 1.0
+        opacityAnimation.duration = 0.4
+        opacityAnimation.fillMode = .forwards
+        opacityAnimation.isRemovedOnCompletion = false
+        
+        // Animation Group
+        let animationGroup = CAAnimationGroup()
+        animationGroup.animations = [flipAnimation, opacityAnimation]
+        animationGroup.duration = 0.65
+        animationGroup.fillMode = .forwards
+        animationGroup.isRemovedOnCompletion = false
+        
+        CATransaction.begin()
+        CATransaction.setCompletionBlock { [weak self] in
+            ticketCardView.layer.transform = endTransform
+            ticketCardView.layer.opacity = 1.0
+            self?.startShimmerAnimation()
+            completion?()
+        }
+        
+        ticketCardView.layer.add(animationGroup, forKey: "card3DFlipAnimation")
+        CATransaction.commit()
     }
     
     // MARK: - Actions

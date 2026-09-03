@@ -389,6 +389,56 @@ final class RateMovieTests: XCTestCase {
         XCTAssertFalse(defaultVC.movieTitleLabel.text?.isEmpty ?? true)
         XCTAssertNotNil(defaultVC.qrImageView.image)
     }
+    
+    func testTicketPassCoreAnimation() {
+        let vc = TicketPassViewController()
+        vc.loadViewIfNeeded()
+        
+        // Shimmer layer verification
+        XCTAssertNotNil(vc.shimmerLayer, "Shimmer layer should be created during setupUI")
+        XCTAssertEqual(vc.shimmerLayer?.name, "ticketCardShimmerLayer")
+        XCTAssertTrue(vc.ticketCardView.layer.sublayers?.contains(where: { $0.name == "ticketCardShimmerLayer" }) ?? false, "Shimmer layer must be a sublayer of ticketCardView")
+        
+        // Update shimmer frame
+        vc.view.frame = CGRect(x: 0, y: 0, width: 375, height: 812)
+        vc.view.layoutIfNeeded()
+        vc.viewDidLayoutSubviews()
+        XCTAssertEqual(vc.shimmerLayer?.frame, vc.ticketCardView.bounds)
+        
+        // Shimmer animation start and stop
+        vc.startShimmerAnimation()
+        XCTAssertNotNil(vc.shimmerLayer?.animation(forKey: "shimmerAnimation"), "CABasicAnimation should be attached for key shimmerAnimation")
+        guard let shimmerAnim = vc.shimmerLayer?.animation(forKey: "shimmerAnimation") as? CABasicAnimation else {
+            XCTFail("Shimmer animation should be CABasicAnimation")
+            return
+        }
+        XCTAssertEqual(shimmerAnim.keyPath, "locations")
+        XCTAssertEqual(shimmerAnim.repeatCount, .infinity)
+        
+        vc.stopShimmerAnimation()
+        XCTAssertNil(vc.shimmerLayer?.animation(forKey: "shimmerAnimation"), "Shimmer animation should be removed on stop")
+        
+        // 3D Card Flip Animation
+        let expectation = self.expectation(description: "3D Flip Animation Completion")
+        vc.perform3DCardFlipAnimation {
+            expectation.fulfill()
+        }
+        XCTAssertNotNil(vc.ticketCardView.layer.animation(forKey: "card3DFlipAnimation"), "Animation group should be added for key card3DFlipAnimation")
+        guard let flipGroup = vc.ticketCardView.layer.animation(forKey: "card3DFlipAnimation") as? CAAnimationGroup else {
+            XCTFail("Flip animation should be CAAnimationGroup")
+            return
+        }
+        XCTAssertEqual(flipGroup.animations?.count, 2)
+        
+        // View did appear trigger
+        let appearVC = TicketPassViewController()
+        appearVC.loadViewIfNeeded()
+        XCTAssertFalse(appearVC.hasAnimatedEntry)
+        appearVC.viewDidAppear(false)
+        XCTAssertTrue(appearVC.hasAnimatedEntry)
+        
+        waitForExpectations(timeout: 2.0, handler: nil)
+    }
 }
 
 
